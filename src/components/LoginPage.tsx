@@ -126,7 +126,7 @@ function LoginPage() {
 
   return (
     <>
-      <div className="bg-[#FE3810] h-screen text-[#F5E7B4] pt-32">
+      <div className="bg-[#001D3D] h-screen text-[#F5E7B4] pt-32">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
             <div className="w-full max-w-xl">

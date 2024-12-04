@@ -152,7 +152,7 @@ function SignupPage() {
   return (
     <>
       <LandingPageHeader />
-      <div className="bg-[#FE3810] h-full md:h-screen text-[#F5E7B4]">
+      <div className="bg-[#001D3D] h-full md:h-screen text-[#FFBF00]">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col gap-6 sm:flex sm:flex-row sm:justify-around md:items-center md:gap-16 pt-20 ">
             <div className="flex flex-col gap-6 max-w-xl">
