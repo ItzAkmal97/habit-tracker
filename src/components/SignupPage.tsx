@@ -21,6 +21,7 @@ import {
   setToastMessage,
 } from "../features/loginSignupSlice";
 import LandingPageHeader from "./LandingPageHeader";
+import { setIsLoggedIn } from "../features/authenticationSlice";
 
 type SignupData = {
   email: string;
@@ -80,11 +81,11 @@ function SignupPage() {
 
       if (userGoogleAuth.user) {
         dispatch(setShowToast(true));
-        dispatch(setToastMessage("Login successful"));
+        dispatch(setToastMessage("Registration with Google successful"));
         dispatch(setToastColor("bg-green-500 text-green-900 border-green-600"));
-
         setTimeout(() => {
-          navigate("/");
+          dispatch(setIsLoggedIn(true));
+          navigate("/dashboard");
         }, 1000);
       }
     } catch (error: unknown) {

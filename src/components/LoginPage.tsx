@@ -21,6 +21,7 @@ import {
 import { RootState } from "../store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { setIsLoggedIn } from "../features/authenticationSlice";
 
 type LoginData = {
   email: string;
@@ -31,6 +32,7 @@ function LoginPage() {
   const { showToast, showPassword, toastColor, toastMessage } = useSelector(
     (state: RootState) => state.loginSignup
   );
+
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -59,9 +61,9 @@ function LoginPage() {
         dispatch(setShowToast(true));
         dispatch(setToastMessage("Login successful"));
         dispatch(setToastColor("bg-green-500 text-green-900 border-green-600"));
-
         setTimeout(() => {
-          navigate("/");
+          dispatch(setIsLoggedIn(true));
+          navigate("/dashboard");
         }, 1000);
       }
     } catch (error: unknown) {
@@ -79,6 +81,8 @@ function LoginPage() {
         dispatch(setToastColor("bg-red-500 text-red-900 border-red-600"));
       }
     }
+
+    dispatch(setIsLoggedIn(false));
   };
 
   const onSubmit = async (data: LoginData) => {
@@ -93,9 +97,11 @@ function LoginPage() {
         dispatch(setShowToast(true));
         dispatch(setToastMessage("Login successful"));
         dispatch(setToastColor("bg-green-500 text-green-300 border-green-600"));
+        
 
         setTimeout(() => {
-          navigate("/");
+          dispatch(setIsLoggedIn(true));
+          navigate("/dashboard");
         }, 1000);
       }
     } catch (error: unknown) {
@@ -193,7 +199,7 @@ function LoginPage() {
                   </button>
 
                   <Link
-                    to="/home"
+                    to="/"
                     className="text-[#F5E7B4] text-center hover:underline"
                   >
                     Don't have an account? Sign up

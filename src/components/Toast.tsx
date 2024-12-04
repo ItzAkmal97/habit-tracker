@@ -12,7 +12,7 @@ const Toast = ({ message, isVisible, onClose, colors }: ToastProps) => {
     if (isVisible) {
       const timer = setTimeout(() => {
         onClose();
-      },10000);
+      },1000);
       return () => clearTimeout(timer);
     }
   }, [isVisible, onClose]);
