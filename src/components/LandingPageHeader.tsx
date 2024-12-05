@@ -7,7 +7,7 @@ function LandingPageHeader() {
       <NavLink to="/login">
         <button
           type="button"
-          className="w-20 bg-[#FE3810] text-[#F5E7B4] font-semibold py-2 px-4 rounded-md hover:bg-red-900 hover:text-[#F5E7B4] duration-500 ease-in-out"
+          className="w-20 bg-blue text-gold font-semibold py-2 px-4 rounded-md hover:bg-black hover:text-[#F5E7B4] duration-500 ease-in-out"
         >
           Login
         </button>

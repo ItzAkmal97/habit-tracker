@@ -1,5 +1,7 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../util/firebaseConfig";
 import { Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -22,6 +24,9 @@ import { RootState } from "../store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { setIsLoggedIn } from "../features/authenticationSlice";
+import { useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { setUsername, setEmail } from "../features/firebaseDbSlice";
 
 type LoginData = {
   email: string;
@@ -36,6 +41,22 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(setIsLoggedIn(true));
+        navigate("/dashboard");
+      } else {
+        dispatch(setIsLoggedIn(false));
+        navigate("/login");
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [dispatch, navigate]);
 
   const schema = yup.object().shape({
     email: yup.string().email().required("Email is required"),
@@ -58,13 +79,8 @@ function LoginPage() {
       );
 
       if (userGoogleAuth.user) {
-        dispatch(setShowToast(true));
-        dispatch(setToastMessage("Login successful"));
-        dispatch(setToastColor("bg-green-500 text-green-900 border-green-600"));
-        setTimeout(() => {
-          dispatch(setIsLoggedIn(true));
-          navigate("/dashboard");
-        }, 1000);
+        dispatch(setIsLoggedIn(true));
+        navigate("/dashboard");
       }
     } catch (error: unknown) {
       console.error(typeof error, error);
@@ -81,8 +97,6 @@ function LoginPage() {
         dispatch(setToastColor("bg-red-500 text-red-900 border-red-600"));
       }
     }
-
-    dispatch(setIsLoggedIn(false));
   };
 
   const onSubmit = async (data: LoginData) => {
@@ -93,16 +107,19 @@ function LoginPage() {
         data.password
       );
 
-      if (userCredentials.user) {
-        dispatch(setShowToast(true));
-        dispatch(setToastMessage("Login successful"));
-        dispatch(setToastColor("bg-green-500 text-green-300 border-green-600"));
-        
+      const userId = userCredentials.user.uid;
 
-        setTimeout(() => {
-          dispatch(setIsLoggedIn(true));
-          navigate("/dashboard");
-        }, 1000);
+      const userDoc = await getDoc(doc(db, "users", userId));
+
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        dispatch(setUsername(userData.username));
+        dispatch(setEmail(userData.email));
+
+        dispatch(setIsLoggedIn(true));
+        navigate("/dashboard");
+      } else {
+        console.log("No User Document Found")
       }
     } catch (error: unknown) {
       console.error(typeof error, error);
@@ -126,7 +143,7 @@ function LoginPage() {
 
   return (
     <>
-      <div className="bg-[#001D3D] h-screen text-[#F5E7B4] pt-32">
+      <div className="bg-blue h-screen text-gold pt-32">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col items-center justify-center">
             <div className="w-full max-w-xl">
@@ -146,7 +163,7 @@ function LoginPage() {
                   <button
                     type="button"
                     onClick={handleGoogleAuth}
-                    className="flex w-full items-start justify-center gap-2 hover:border-white duration-500 ease-in-out border border-[#F5E7B4] font-semibold py-3 px-6 rounded-md"
+                    className="flex w-full items-start justify-center gap-2 hover:border-gold duration-500 ease-in-out border border-white font-semibold py-3 rounded-md"
                   >
                     <Mail size={20} />
                     Log in with Google
@@ -161,11 +178,11 @@ function LoginPage() {
                   <input
                     type="email"
                     placeholder="Email"
-                    className="h-8 w-full transition duration-500 ease-in-out p-2 focus:bg-[#F5E7B4]"
+                    className="h-8 w-full p-2 text-black"
                     {...register("email")}
                   />
                   {errors.email && (
-                    <p className="text-white font-bold">
+                    <p className="text-red-500 font-bold">
                       {errors.email.message}
                     </p>
                   )}
@@ -174,7 +191,7 @@ function LoginPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
-                      className="h-8 w-full transition duration-500 ease-in-out p-2 pr-10 text-black focus:bg-[#F5E7B4]"
+                      className="h-8 w-full p-2 text-black"
                       {...register("password")}
                     />
                     <button
@@ -186,14 +203,14 @@ function LoginPage() {
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="text-white font-bold">
+                    <p className="text-red-500 font-bold">
                       {errors.password.message}
                     </p>
                   )}
 
                   <button
                     type="submit"
-                    className="bg-[#F5E7B4] text-[#FE3810] font-semibold py-5 px-6 rounded-md hover:bg-red-900 hover:text-[#F5E7B4] duration-500 ease-in-out mt-4"
+                    className="bg-gold text-blue font-semibold py-4 rounded-md hover:bg-yellow-400 duration-300 ease-in-out mt-4"
                   >
                     Log In
                   </button>

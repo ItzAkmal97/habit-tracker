@@ -7,14 +7,19 @@ import Login from "./pages/Login";
 import DashboardPage from "./components/DashboardPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import { RootState } from "./store/store";
+import Loading from "./components/Loading";
+import { useAuth } from "./util/useAuth";
 
 function App() {
   const { isLoggedIn } = useSelector(
     (state: RootState) => state.authentication
   );
 
+  const isLoading = useAuth();
+
   const router = createBrowserRouter([
     {
+      
       path: "/",
       element: <RootLayout />,
       errorElement: <Error />,
@@ -33,7 +38,12 @@ function App() {
     },
   ]);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <Loading isLoading={isLoading} />
+      {!isLoading && <RouterProvider router={router} />}
+    </>
+  );
 }
 
 export default App;

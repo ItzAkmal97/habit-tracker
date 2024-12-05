@@ -1,4 +1,6 @@
 import { useForm } from "react-hook-form";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../util/firebaseConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -24,12 +26,14 @@ import LandingPageHeader from "./LandingPageHeader";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 
 type SignupData = {
+  userId: string,
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
 };
 
-function SignupPage() {
+const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   const { showPassword, showToast, toastColor, toastMessage } = useSelector(
     (state: RootState) => state.loginSignup
@@ -39,6 +43,13 @@ function SignupPage() {
 
   const schema = yup.object().shape({
     email: yup.string().email().required("Email is required"),
+    username: yup
+      .string()
+      .matches(
+        /^[a-zA-Z0-9_-]{1,20}$/,
+        "Username must be 1 to 20 characters long, containing only letters (a-z), numbers (0-9), hyphens (-), or underscores (_)"
+      )
+      .required("Username is required"),
     password: yup
       .string()
       .required("Password is required")
@@ -80,13 +91,8 @@ function SignupPage() {
       );
 
       if (userGoogleAuth.user) {
-        dispatch(setShowToast(true));
-        dispatch(setToastMessage("Registration with Google successful"));
-        dispatch(setToastColor("bg-green-500 text-green-900 border-green-600"));
-        setTimeout(() => {
-          dispatch(setIsLoggedIn(true));
-          navigate("/dashboard");
-        }, 1000);
+        dispatch(setIsLoggedIn(true));
+        navigate("/dashboard");
       }
     } catch (error: unknown) {
       console.error(error instanceof FirebaseError, error);
@@ -114,13 +120,13 @@ function SignupPage() {
       );
 
       if (userCredential.user) {
-        dispatch(setShowToast(true));
-        dispatch(setToastMessage("Registration successful"));
-        dispatch(setToastColor("bg-green-500 text-green-100 border-green-600"));
-
-        setTimeout(() => {
-          navigate("/login");
-        }, 1000);
+        const userId = userCredential.user.uid;
+        await setDoc(doc(collection(db, "users", userId)), {
+          username: data.username,
+          email: data.email,
+        });
+        dispatch(setIsLoggedIn(true))
+        navigate("/login");
       }
     } catch (error: unknown) {
       console.error(error instanceof FirebaseError, error);
@@ -152,10 +158,10 @@ function SignupPage() {
   return (
     <>
       <LandingPageHeader />
-      <div className="bg-[#001D3D] h-full md:h-screen text-[#FFBF00]">
+      <div className="bg-blue h-full md:h-screen text-gold">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col gap-6 sm:flex sm:flex-row sm:justify-around md:items-center md:gap-16 pt-20 ">
-            <div className="flex flex-col gap-6 max-w-xl">
+            <div className="flex flex-col justify-center gap-6 max-w-xl">
               <h1 className="text-7xl font-semibold">
                 Turn Habits into Herds of Success.
               </h1>
@@ -165,10 +171,8 @@ function SignupPage() {
                 all while earning rewards and tracking your progress.
               </p>
             </div>
-            <div className="sm:flex md:flex-col md:justify-center md:items-center py-16">
-              <h1 className="text-center text-3xl md:text-4xl mb-2">
-                Sign Up For Free
-              </h1>
+            <div className="sm:flex sm:flex-col sm:justify-center sm:items-center py-16">
+              <h1 className=" text-3xl md:text-4xl mb-2">Sign Up For Free</h1>
               <form
                 className="flex flex-col gap-2 mt-8"
                 onSubmit={handleSubmit(onSubmit)}
@@ -182,19 +186,27 @@ function SignupPage() {
                       colors={toastColor}
                     />
                   )}
-                  <p className="font-semibold">
-                    Sign up for early Sale access plus tailored new arrivals,
-                    trends and promotions. To opt out, click unsubscribe in our
-                    emails.
-                  </p>
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    className="h-8 w-full p-2 text-blue"
+                    {...register("username")}
+                  />
+                  {errors.username && (
+                    <p className="text-red-500 font-bold">
+                      {errors.username.message}
+                    </p>
+                  )}
+
                   <input
                     type="email"
                     placeholder="Email"
-                    className="h-8 w-full border focus:border-red-500 transition duration-500 ease-in-out p-2"
+                    className="h-8 w-full p-2 text-blue"
                     {...register("email")}
                   />
+
                   {errors.email && (
-                    <p className="text-white font-bold">
+                    <p className="text-red-500 font-bold">
                       {errors.email.message}
                     </p>
                   )}
@@ -202,7 +214,7 @@ function SignupPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Password"
-                      className="h-8 w-full border focus:border-black transition duration-500 ease-in-out p-2 pr-10"
+                      className="h-8 w-full text-blue p-2"
                       {...register("password")}
                     />
                     <button
@@ -214,7 +226,7 @@ function SignupPage() {
                     </button>
                   </div>
                   {errors.password && (
-                    <p className="text-white font-bold">
+                    <p className="text-red-500 font-bold">
                       {errors.password.message}
                     </p>
                   )}
@@ -222,7 +234,7 @@ function SignupPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       placeholder="Confirm Password"
-                      className="h-8 w-full border focus:border-[#F5E7B4] transition duration-500 ease-in-out p-2 pr-10"
+                      className="h-8 w-full text-blue p-2 "
                       {...register("confirmPassword")}
                     />
                     <button
@@ -234,7 +246,7 @@ function SignupPage() {
                     </button>
                   </div>
                   {errors.confirmPassword && (
-                    <p className="text-white font-bold">
+                    <p className="text-red-500 font-bold">
                       {errors.confirmPassword.message}
                     </p>
                   )}
@@ -245,21 +257,21 @@ function SignupPage() {
                 </p>
                 <button
                   type="submit"
-                  className="bg-[#F5E7B4] text-[#FE3810] font-semibold py-5 px-6 rounded-md hover:bg-red-900 hover:text-[#F5E7B4] duration-500 ease-in-out mt-4"
+                  className="bg-gold text-blue font-semibold py-4 rounded-md hover:bg-yellow-400 duration-300 ease-in-out mt-4"
                 >
                   Sign up
                 </button>
 
                 <div className="flex items-center gap-4">
-                  <div className="h-px bg-[#F5E7B4] flex-1"></div>
-                  <span className="text-[#F5E7B4] font-medium">OR</span>
-                  <div className="h-px bg-[#F5E7B4] flex-1"></div>
+                  <div className="h-px bg-gold flex-1"></div>
+                  <span className="text-gold font-medium">OR</span>
+                  <div className="h-px bg-gold flex-1"></div>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleGoogleAuth}
-                  className="flex w-full items-start justify-center gap-2 hover:border-white duration-500 ease-in-out border border-[#F5E7B4] font-semibold py-3 px-6 rounded-md"
+                  className="flex w-full items-start justify-center gap-2 hover:border-gold duration-500 ease-in-out border border-[#F5E7B4] font-semibold py-3 px-6 rounded-md"
                 >
                   <Mail size={20} />
                   Start with Google
@@ -271,6 +283,6 @@ function SignupPage() {
       </div>
     </>
   );
-}
+};
 
 export default SignupPage;
