@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { collection, doc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "../util/firebaseConfig";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,6 @@ import LandingPageHeader from "./LandingPageHeader";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 
 type SignupData = {
-  userId: string,
   username: string;
   email: string;
   password: string;
@@ -121,11 +120,18 @@ const SignupPage: React.FC = () => {
 
       if (userCredential.user) {
         const userId = userCredential.user.uid;
-        await setDoc(doc(collection(db, "users", userId)), {
+        await setDoc(doc(db, "users", userId), {
           username: data.username,
           email: data.email,
         });
-        dispatch(setIsLoggedIn(true))
+
+        localStorage.setItem("username", data.username);
+        localStorage.setItem("email", data.email);
+
+        dispatch(setToastMessage("Registration Successful"));
+        dispatch(setToastColor("bg-green-500 text-green-100 border-green-600"));
+        dispatch(setShowToast(true));
+
         navigate("/login");
       }
     } catch (error: unknown) {

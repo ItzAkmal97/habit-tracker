@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface FirebaseDbStateSlice {
   username: string;
@@ -7,15 +7,15 @@ interface FirebaseDbStateSlice {
 
 const initialState: FirebaseDbStateSlice = { username: "", email: "" };
 
-export const firebaseDbStateSlice = createSlice({
+const firebaseDbStateSlice = createSlice({
   name: "firebaseDb",
   initialState,
   reducers: {
-    setUsername(state, action) {
+    setUsername(state, action: PayloadAction<string>) {
       state.username = action.payload;
     },
 
-    setEmail(state, action) {
+    setEmail(state, action: PayloadAction<string>) {
       state.email = action.payload;
     },
   },

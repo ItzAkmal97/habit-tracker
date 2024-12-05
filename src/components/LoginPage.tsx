@@ -26,7 +26,7 @@ import { Link } from "react-router-dom";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { setUsername, setEmail } from "../features/firebaseDbSlice";
+// import { setUsername, setEmail } from "../features/firebaseDbSlice";
 
 type LoginData = {
   email: string;
@@ -113,13 +113,15 @@ function LoginPage() {
 
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        dispatch(setUsername(userData.username));
-        dispatch(setEmail(userData.email));
 
+        if (userData) {
+          localStorage.setItem("username", userData.username);
+          localStorage.setItem("email", userData.email);
+        }
         dispatch(setIsLoggedIn(true));
         navigate("/dashboard");
       } else {
-        console.log("No User Document Found")
+        console.log("No User Document Found");
       }
     } catch (error: unknown) {
       console.error(typeof error, error);

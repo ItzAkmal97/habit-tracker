@@ -2,19 +2,19 @@ import React, { useState, useEffect, useRef } from "react";
 import img from "../assets/habit.png";
 import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, } from "react-redux";
 import { MessageSquareMore } from "lucide-react";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
-import { RootState } from "../store/store";
+// import { RootState } from "../store/store";
 
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
-  const { username, email } = useSelector(
-    (State: RootState) => State.firebaseDb
-  );
+  // const { username, email } = useSelector(
+  //   (State: RootState) => State.firebaseDb
+  // );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,6 +46,10 @@ const DashboardHeader: React.FC = () => {
       .catch((error) => {
         console.error(error);
       });
+
+      localStorage.removeItem("username");
+      localStorage.removeItem("email");
+      
   };
 
   useEffect(() => {
@@ -84,10 +88,10 @@ const DashboardHeader: React.FC = () => {
           >
             <ul className="rounded-md">
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                {username}
+                {localStorage.getItem("username")}
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                {email}
+                {localStorage.getItem("email")}
               </li>
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 <a href="mailto:muhammadakmal441@gmail.com">Contact support</a>

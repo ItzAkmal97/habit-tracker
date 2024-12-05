@@ -1,4 +1,3 @@
-import React from "react";
 import DashboardHeader from "./DashboardHeader";
 function DashboardPage() {
   return (
