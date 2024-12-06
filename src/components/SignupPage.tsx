@@ -90,6 +90,18 @@ const SignupPage: React.FC = () => {
       );
 
       if (userGoogleAuth.user) {
+        const username = userGoogleAuth.user.displayName;
+        const email = userGoogleAuth.user.email;
+        const photoURL = userGoogleAuth.user.photoURL;
+
+        if (username && email && photoURL) {
+          localStorage.setItem("username", username);
+          localStorage.setItem("email", email);
+          localStorage.setItem("photoURL", photoURL);
+        }
+
+        const localLoggedin = dispatch(setIsLoggedIn(true));
+        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
         dispatch(setIsLoggedIn(true));
         navigate("/dashboard");
       }
@@ -128,11 +140,15 @@ const SignupPage: React.FC = () => {
         localStorage.setItem("username", data.username);
         localStorage.setItem("email", data.email);
 
+        const localLoggedin = dispatch(setIsLoggedIn(true));
+
+        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
+
         dispatch(setToastMessage("Registration Successful"));
         dispatch(setToastColor("bg-green-500 text-green-100 border-green-600"));
         dispatch(setShowToast(true));
 
-        navigate("/login");
+        navigate("/dashboard");
       }
     } catch (error: unknown) {
       console.error(error instanceof FirebaseError, error);

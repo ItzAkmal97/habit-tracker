@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import { useSelector } from "react-redux";
 import Signup from "./pages/Signup";
 import RootLayout from "./pages/RootLayout";
@@ -15,17 +15,28 @@ function App() {
     (state: RootState) => state.authentication
   );
 
+  const isLocalLoggedIn = localStorage.getItem("isLoggedIn");
+
   const isLoading = useAuth();
 
   const router = createBrowserRouter([
     {
-      
       path: "/",
       element: <RootLayout />,
       errorElement: <Error />,
       children: [
-        { path: "/", element: <Signup /> },
-        { path: "/login", element: <Login /> },
+        {
+          path: "/",
+          element: isLocalLoggedIn ? (
+            <Navigate to="/dashboard" replace />
+          ) : (
+            <Signup />
+          ),
+        },
+        {
+          path: "/login",
+          element: <Login />,
+        },
         {
           path: "/dashboard",
           element: (

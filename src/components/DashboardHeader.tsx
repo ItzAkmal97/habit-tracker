@@ -1,20 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import img from "../assets/habit.png";
-import { User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, } from "react-redux";
+import { useDispatch } from "react-redux";
 import { MessageSquareMore } from "lucide-react";
 import { setIsLoggedIn } from "../features/authenticationSlice";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { signOut } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
-// import { RootState } from "../store/store";
-
+import avatarImg from "../assets/avatar.png";
+import Modal from "./Modal";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-
-  // const { username, email } = useSelector(
-  //   (State: RootState) => State.firebaseDb
-  // );
+  const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -46,24 +42,17 @@ const DashboardHeader: React.FC = () => {
       .catch((error) => {
         console.error(error);
       });
-
-      localStorage.removeItem("username");
-      localStorage.removeItem("email");
-      
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("photoURL");
+    dispatch(setIsLoggedIn(false));
+    navigate("/login", { replace: true });
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        dispatch(setIsLoggedIn(false));
-        navigate("/login", { replace: true });
-      }
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, [dispatch, navigate]);
+  const googlePhoto = localStorage.getItem("photoURL");
+  const username = localStorage.getItem("username");
+  const email = localStorage.getItem("email");
 
   return (
     <header className="flex justify-between items-center px-6 bg-gold py-2">
@@ -73,9 +62,20 @@ const DashboardHeader: React.FC = () => {
           className="cursor-pointer focus:outline-none"
           onClick={handleDropdownToggle}
         >
-          <User className="w-8 h-8" />
+          {googlePhoto ? (
+            <img
+              src={googlePhoto ?? avatarImg}
+              alt="Avatar"
+              className="w-12 h-12 rounded-full object-contain"
+            />
+          ) : (
+            <img
+              src={avatarImg}
+              alt="Avatar"
+              className="w-12 h-12 rounded-full object-contain"
+            />
+          )}
         </button>
-
         <button>
           <MessageSquareMore className="w-8 h-8" />
         </button>
@@ -87,12 +87,13 @@ const DashboardHeader: React.FC = () => {
             className="absolute right-3 top-14 mt-2 w-48 bg-white shadow-lg rounded-md z-10"
           >
             <ul className="rounded-md">
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                {localStorage.getItem("username")}
-              </li>
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                {localStorage.getItem("email")}
-              </li>
+              <button
+                onClick={() => setIsModelOpen(true)}
+                className="w-full px-4 py-2 hover:bg-gray-100 text-start"
+              >
+                Profile
+              </button>
+
               <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
                 <a href="mailto:muhammadakmal441@gmail.com">Contact support</a>
               </li>
@@ -105,6 +106,25 @@ const DashboardHeader: React.FC = () => {
             </ul>
           </div>
         )}
+
+        <Modal
+          isOpen={isModelOpen}
+          onClose={() => setIsModelOpen(false)}
+          title="Profile"
+        >
+          <ul>
+            <li className="px-4 py-2 hover:bg-gray-100">
+              Username: {username}
+            </li>
+            <li className="px-4 py-2 hover:bg-gray-100">Email: {email}</li>
+            {!googlePhoto && (
+              <li className="px-4 py-2">
+                <label htmlFor="file">Change Profile Picture</label>
+                <input className="pt-2" type="file" />
+              </li>
+            )}
+          </ul>
+        </Modal>
       </div>
     </header>
   );

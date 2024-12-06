@@ -26,7 +26,6 @@ import { Link } from "react-router-dom";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 import { useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-// import { setUsername, setEmail } from "../features/firebaseDbSlice";
 
 type LoginData = {
   email: string;
@@ -79,6 +78,18 @@ function LoginPage() {
       );
 
       if (userGoogleAuth.user) {
+        const username = userGoogleAuth.user.displayName;
+        const email = userGoogleAuth.user.email;
+        const photoURL = userGoogleAuth.user.photoURL;
+
+        if (username && email && photoURL) {
+          localStorage.setItem("username", username);
+          localStorage.setItem("email", email);
+          localStorage.setItem("photoURL", photoURL);
+        }
+
+        const localLoggedin = dispatch(setIsLoggedIn(true));
+        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
         dispatch(setIsLoggedIn(true));
         navigate("/dashboard");
       }
@@ -118,7 +129,9 @@ function LoginPage() {
           localStorage.setItem("username", userData.username);
           localStorage.setItem("email", userData.email);
         }
-        dispatch(setIsLoggedIn(true));
+        const localLoggedin = dispatch(setIsLoggedIn(true));
+
+        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
         navigate("/dashboard");
       } else {
         console.log("No User Document Found");
