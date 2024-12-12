@@ -88,9 +88,8 @@ function LoginPage() {
           localStorage.setItem("photoURL", photoURL);
         }
 
-        const localLoggedin = dispatch(setIsLoggedIn(true));
-        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
         dispatch(setIsLoggedIn(true));
+        localStorage.setItem("isLoggedIn", "true");
         navigate("/dashboard");
       }
     } catch (error: unknown) {

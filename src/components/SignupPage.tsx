@@ -33,12 +33,12 @@ type SignupData = {
 };
 
 const SignupPage: React.FC = () => {
-  const navigate = useNavigate();
   const { showPassword, showToast, toastColor, toastMessage } = useSelector(
     (state: RootState) => state.loginSignup
   );
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const schema = yup.object().shape({
     email: yup.string().email().required("Email is required"),
@@ -100,9 +100,8 @@ const SignupPage: React.FC = () => {
           localStorage.setItem("photoURL", photoURL);
         }
 
-        const localLoggedin = dispatch(setIsLoggedIn(true));
-        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
         dispatch(setIsLoggedIn(true));
+        localStorage.setItem("isLoggedIn", "true");
         navigate("/dashboard");
       }
     } catch (error: unknown) {
@@ -140,14 +139,8 @@ const SignupPage: React.FC = () => {
         localStorage.setItem("username", data.username);
         localStorage.setItem("email", data.email);
 
-        const localLoggedin = dispatch(setIsLoggedIn(true));
-
-        localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
-
-        dispatch(setToastMessage("Registration Successful"));
-        dispatch(setToastColor("bg-green-500 text-green-100 border-green-600"));
-        dispatch(setShowToast(true));
-
+        dispatch(setIsLoggedIn(true));
+        localStorage.setItem("isLoggedIn", "true");
         navigate("/dashboard");
       }
     } catch (error: unknown) {

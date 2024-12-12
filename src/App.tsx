@@ -17,7 +17,7 @@ function App() {
 
   const isLocalLoggedIn = localStorage.getItem("isLoggedIn");
 
-  const isLoading = useAuth();
+  const {isLoading} = useAuth();
 
   const router = createBrowserRouter([
     {

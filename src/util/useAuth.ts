@@ -6,13 +6,16 @@ import { auth } from "../util/firebaseConfig";
 
 export const useAuth = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<null | any>(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
         dispatch(setIsLoggedIn(true));
       } else {
+        setUser(null);
         dispatch(setIsLoggedIn(false));
       }
       setIsLoading(false);
@@ -21,5 +24,5 @@ export const useAuth = () => {
     return () => unsubscribe();
   }, [dispatch]);
 
-  return isLoading;
+  return {isLoading, user};
 };
