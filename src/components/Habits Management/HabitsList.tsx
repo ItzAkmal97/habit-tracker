@@ -1,28 +1,25 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../store/store";
 import HabitDropdownMenu from "./HabitsDropdownMenu";
 import { db } from "../../util/firebaseConfig";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
-
-interface HabitsCounter {
-  positive: number;
-  negative: number;
-}
+import {
+  incrementCounter,
+  decrementCounter,
+  deleteHabit,
+} from "../../features/habitsSlice";
 
 const HabitsList: React.FC = () => {
   const habits = useSelector((state: RootState) => state.habits.habits);
+  const dispatch = useDispatch();
+  const { user } = useAuth();
 
-  const [habitsCounter, setHabitsCounter] = useState<
-    Record<string, HabitsCounter>
-  >({});
-
-  const {user} = useAuth();
-
-  
-
-  const updateHabitCounter = async (habitId: string, updatedCounter: any) => {
+  const updateHabitCounter = async (
+    habitId: string,
+    updatedCounter: { [key: string]: number }
+  ) => {
     if (!user) return;
 
     const habitRef = doc(db, "users", user.uid, "habits", habitId);
@@ -30,23 +27,44 @@ const HabitsList: React.FC = () => {
   };
 
   const handleIncreaseCounter = async (habitId: string) => {
-    const updatedCounters = {
-      ...habitsCounter[habitId],
-      positive: (habitsCounter[habitId]?.positive || 0) + 1,
-    };
-    setHabitsCounter((prev) => ({ ...prev, [habitId]: updatedCounters }));
-    await updateHabitCounter(habitId, { positiveCount: updatedCounters.positive });
+    dispatch(incrementCounter({ habitId }));
+
+    const habit = habits.find((h) => h.id === habitId);
+    if (habit) {
+      await updateHabitCounter(habitId, {
+        positiveCount: (habit.positiveCount || 0) + 1,
+      });
+    }
   };
-  
+
   const handleDecreaseCounter = async (habitId: string) => {
-    const updatedCounters = {
-      ...habitsCounter[habitId],
-      negative: (habitsCounter[habitId]?.negative || 0) + 1,
-    };
-    setHabitsCounter((prev) => ({ ...prev, [habitId]: updatedCounters }));
-    await updateHabitCounter(habitId, { negativeCount: updatedCounters.negative });
+    dispatch(decrementCounter({ habitId }));
+
+    const habit = habits.find((h) => h.id === habitId);
+    if (habit) {
+      await updateHabitCounter(habitId, {
+        negativeCount: (habit.negativeCount || 0) + 1,
+      });
+    }
   };
-  
+
+  // Add method to handle habit deletion
+  const handleDeleteHabit = async (habitId: string) => {
+    if (!user) return;
+
+    try {
+      // Delete from Firestore
+      const habitRef = doc(db, "users", user.uid, "habits", habitId);
+      await deleteDoc(habitRef);
+
+      // Remove from Redux store
+      dispatch(deleteHabit(habitId));
+    } catch (error) {
+      console.error("Error deleting habit:", error);
+    }
+  };
+
+  const cssClass = " text-gray-600 border-black border-2 border-dotted";
 
   return (
     <div className="w-full bg-gray-100 p-2 rounded-lg shadow-md">
@@ -64,28 +82,49 @@ const HabitsList: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleIncreaseCounter(habit.id)}
-                      className="rounded-full font-bold text-2xl text-white bg-gold w-8 h-8"
+                      className={
+                        !habit.positive
+                          ? `rounded-full font-bold text-2xl w-8 h-8 ${cssClass}`
+                          : `rounded-full font-bold text-2xl text-white bg-gold w-8 h-8`
+                      }
+                      disabled={!habit.positive}
                     >
                       +
                     </button>
-
-                    <span className="text-gray-800 text-lg">{habit.title}</span>
+                    <div className="flex flex-col gap-2 justify-center">
+                      <span className="text-gray-800 text-lg">
+                        {habit.title}
+                      </span>
+                      {habit.description && (
+                        <span className="text-gray-600 text-sm">
+                          {habit.description}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <HabitDropdownMenu habit={habit} />
+                  <div className="flex gap-2">
+                    <HabitDropdownMenu
+                      habit={habit}
+                      onDelete={() => handleDeleteHabit(habit.id)}
+                    />
                     <button
                       onClick={() => handleDecreaseCounter(habit.id)}
-                      className="rounded-full font-bold text-2xl text-white bg-gold w-8 h-8"
+                      className={
+                        habit.positive
+                          ? `rounded-full font-bold text-2xl w-8 h-8 ${cssClass}`
+                          : `rounded-full font-bold text-2xl text-white bg-gold w-8 h-8`
+                      }
+                      disabled={habit.positive}
                     >
                       -
                     </button>
                   </div>
                 </div>
                 <span className="flex justify-end pr-12 text-sm text-gray-700">
-                  {habitsCounter[habit.id]?.positive > 0
-                    ? `+${habitsCounter[habit.id]?.positive}`
-                    : `${habitsCounter[habit.id]?.positive || 0}`}{" "}
-                  | {habitsCounter[habit.id]?.negative || 0}
+                  {habit.positiveCount ?? 0 > 0
+                    ? `+${habit.positiveCount}`
+                    : `${habit.positiveCount || 0}`}{" "}
+                  | {habit.negativeCount || 0}
                 </span>
               </li>
             ))}

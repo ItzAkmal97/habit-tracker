@@ -1,11 +1,16 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface Habit {
+export type ResetCounter = {
+  resetCounter: "Daily" | "Weekly" | "Monthly";
+};
+export interface Habit {
+  id: string;
   title: string;
   description: string;
-  id: string;
-  positive?: boolean;
-  negative?: boolean;
+  positive: boolean;
+  negative: boolean;
+  positiveCount?: number;
+  negativeCount?: number;
+  resetCounter?: ResetCounter;
 }
 
 interface HabitsState {
@@ -20,8 +25,18 @@ const habitsSlice = createSlice({
   name: "habits",
   initialState,
   reducers: {
+    setHabits: (state, action: PayloadAction<Habit[]>) => {
+      state.habits = action.payload;
+    },
+
     addHabit: (state, action: PayloadAction<Habit>) => {
-      state.habits.push(action.payload);
+      if (!state.habits.some((habit) => habit.id === action.payload.id)) {
+        state.habits.push({
+          ...action.payload,
+          positiveCount: 0,
+          negativeCount: 0,
+        });
+      }
     },
 
     deleteHabit: (state, action: PayloadAction<string>) => {
@@ -31,23 +46,57 @@ const habitsSlice = createSlice({
     },
 
     editHabit: (
-      state, 
-      action: PayloadAction<{ 
-        id: string; 
-        title: string; 
-        description: string 
+      state,
+      action: PayloadAction<{
+        id: string;
+        title: string;
+        description: string;
+        positive: boolean;
+        negative: boolean;
+        resetCounter: ResetCounter;
       }>
     ) => {
-      const { id, title, description } = action.payload;
+      const {
+        id,
+        title,
+        description,
+        positive,
+        negative,
+        resetCounter,
+      } = action.payload;
       const habit = state.habits.find((habit) => habit.id === id);
       if (habit) {
         habit.title = title;
         habit.description = description;
+        habit.positive = positive;
+        habit.negative = negative;
+        habit.resetCounter = resetCounter;
+      }
+    },
+
+    incrementCounter: (state, action: PayloadAction<{ habitId: string }>) => {
+      const habit = state.habits.find((h) => h.id === action.payload.habitId);
+      if (habit) {
+        habit.positiveCount = (habit.positiveCount || 0) + 1;
+      }
+    },
+
+    decrementCounter: (state, action: PayloadAction<{ habitId: string }>) => {
+      const habit = state.habits.find((h) => h.id === action.payload.habitId);
+      if (habit) {
+        habit.negativeCount = (habit.negativeCount || 0) - 1;
       }
     },
   },
 });
 
-export const { addHabit, editHabit, deleteHabit } = habitsSlice.actions;
+export const {
+  setHabits,
+  addHabit,
+  editHabit,
+  deleteHabit,
+  incrementCounter,
+  decrementCounter,
+} = habitsSlice.actions;
 
 export default habitsSlice.reducer;

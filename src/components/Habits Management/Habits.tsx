@@ -1,18 +1,53 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { v4 as uuidv4 } from "uuid";
-import { addHabit } from "../../features/habitsSlice";
+import { addHabit, setHabits } from "../../features/habitsSlice";
+import { Habit } from "../../features/habitsSlice";
 import HabitsList from "./HabitsList";
 import { db } from "../../util/firebaseConfig";
 import { doc, collection, setDoc, getDocs } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
+import Loading from "../Loading";
 
 const Habits: React.FC = () => {
   const [input, setInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const dispatch = useDispatch();
-
   const { user } = useAuth();
-  const saveHabit = async (habitId: string, habitData: any) => {
+
+  useEffect(() => {
+    const fetchHabits = async () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        setIsLoading(true);
+        const habitCollection = collection(db, "users", user.uid, "habits");
+        const snapshot = await getDocs(habitCollection);
+
+        const fetchedHabits: Habit[] = snapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            } as Habit)
+        );
+
+        // Dispatch fetched habits to Redux store
+        dispatch(setHabits(fetchedHabits));
+      } catch (error) {
+        console.error("Error fetching habits:", error);
+      }
+
+      setIsLoading(false);
+    };
+
+    fetchHabits();
+  }, [user, dispatch]);
+
+  const saveHabit = async (habitId: string, habitData: Habit) => {
     try {
       if (!user) return;
 
@@ -21,40 +56,16 @@ const Habits: React.FC = () => {
         habitId
       );
       await setDoc(habitRef, habitData);
-    } catch (error: Error) {
-      alert(error.message);
-    }
-  };
-
-  const fetchHabits = async () => {
-    try {
-      if (!user) return;
-
-      const habitCollection = collection(db, "users", user.uid, "habits");
-
-      const snapshot = await getDocs(habitCollection);
-      const habitsData = snapshot.docs.map((doc) => doc.data());
-      return habitsData;
-    } catch (error: Error) {
-      alert(error.message);
-    }
-  };
-
-  useEffect(() => {
-    const fetchAndSetHabits = async () => {
-      const fetchedHabits = await fetchHabits();
-      if (fetchedHabits) {
-        fetchedHabits.forEach((habit) => dispatch(addHabit(habit))); // Sync with Redux
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error saving habit: ", error.message);
       }
-    };
-  
-    fetchAndSetHabits();
-  }, []);
-  
+    }
+  };
 
   const handleAddHabit = async () => {
     if (input.trim()) {
-      const newHabit = {
+      const newHabit: Habit = {
         id: uuidv4(),
         title: input,
         description: "",
@@ -63,9 +74,11 @@ const Habits: React.FC = () => {
         positiveCount: 0,
         negativeCount: 0,
       };
+
+      // Dispatch to Redux and save to Firestore
       dispatch(addHabit(newHabit));
       setInput("");
-      await saveHabit(newHabit.id, newHabit); // Save habit to Firebase
+      await saveHabit(newHabit.id, newHabit);
     }
   };
 
@@ -82,7 +95,7 @@ const Habits: React.FC = () => {
             onKeyDown={(e) => e.key === "Enter" && handleAddHabit()}
           />
         </div>
-        <HabitsList />
+        {isLoading ? <Loading isLoading={isLoading} cssClassName="w-full bg-white h-20"/> : <HabitsList />}
       </div>
     </div>
   );

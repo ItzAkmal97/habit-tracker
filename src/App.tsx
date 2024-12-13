@@ -51,7 +51,7 @@ function App() {
 
   return (
     <>
-      <Loading isLoading={isLoading} />
+      <Loading isLoading={isLoading} cssClassName="h-screen bg-blue" />
       {!isLoading && <RouterProvider router={router} />}
     </>
   );

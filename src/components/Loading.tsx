@@ -3,13 +3,14 @@ import { ClipLoader } from "react-spinners";
 
 interface LoadingProps {
   isLoading: boolean;
+  cssClassName?: string;
 }
 
-const Loading: React.FC<LoadingProps> = ({ isLoading }) => {
+const Loading: React.FC<LoadingProps> = ({ isLoading, cssClassName }) => {
   if (!isLoading) return null;
 
   return (
-    <div className="flex justify-center items-center h-screen bg-blue">
+    <div className={`flex justify-center items-center ${cssClassName}`}>
       <ClipLoader
         color="gold"
         className="font-bold"
