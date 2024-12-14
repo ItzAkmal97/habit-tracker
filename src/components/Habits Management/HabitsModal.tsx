@@ -15,6 +15,7 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
+import { deleteDoc } from "firebase/firestore";
 
 interface HabitsModalProps {
   habit: Habit;
@@ -50,6 +51,21 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
     setHabitType(value);
   };
 
+    const handleDeleteHabit = async (habitId: string) => {
+      if (!user) return;
+  
+      try {
+        // Delete from Firestore
+        const habitRef = doc(db, "users", user.uid, "habits", habitId);
+        await deleteDoc(habitRef);
+  
+        // Remove from Redux store
+        dispatch(deleteHabit(habitId));
+      } catch (error) {
+        console.error("Error deleting habit:", error);
+      }
+    };
+
   const handleSave = async () => {
     if (user) {
       setIsSubmitting(true);
@@ -83,7 +99,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
 
   return (
     <div
-      className={`fixed -top-0 z-50 inset-0 overflow-y-auto backdrop-blur-sm flex items-center justify-center ${
+      className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center ${
         isOpen ? "visible" : "invisible"
       }`}
     >
@@ -136,7 +152,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
               Type
             </label>
             <Select value={habitType} onValueChange={handleHabitTypeChange}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger>
                 <SelectValue placeholder="Select habit type" />
               </SelectTrigger>
               <SelectContent>
@@ -151,7 +167,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
               Reset Counter
             </label>
             <Select>
-              <SelectTrigger className="w-full">
+              <SelectTrigger>
                 <SelectValue placeholder="Select reset frequency" />
               </SelectTrigger>
               <SelectContent>
@@ -164,7 +180,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
           <div className="flex justify-center">
             <Button
               variant="outline"
-              onClick={() => dispatch(deleteHabit(habit.id))}
+              onClick={() => handleDeleteHabit(habit.id)}
             >
               <Trash2 className="w-4 h-4 mr-2" />
               Delete this Habit

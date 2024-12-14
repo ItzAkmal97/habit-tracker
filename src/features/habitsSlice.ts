@@ -11,6 +11,7 @@ export interface Habit {
   positiveCount?: number;
   negativeCount?: number;
   resetCounter?: ResetCounter;
+  order?: number;
 }
 
 interface HabitsState {
@@ -25,6 +26,23 @@ const habitsSlice = createSlice({
   name: "habits",
   initialState,
   reducers: {
+    reorderHabits: (
+      state,
+      action: PayloadAction<{ sourceIndex: number; destinationIndex: number }>
+    ) => {
+      const { sourceIndex, destinationIndex } = action.payload;
+
+      // Remove the habit from the source index
+      const [reorderedHabit] = state.habits.splice(sourceIndex, 1);
+
+      // Insert the habit at the destination index
+      state.habits.splice(destinationIndex, 0, reorderedHabit);
+
+      // Optionally, update order property for each habit
+      state.habits.forEach((habit, index) => {
+        habit.order = index;
+      });
+    },
     setHabits: (state, action: PayloadAction<Habit[]>) => {
       state.habits = action.payload;
     },
@@ -56,14 +74,8 @@ const habitsSlice = createSlice({
         resetCounter: ResetCounter;
       }>
     ) => {
-      const {
-        id,
-        title,
-        description,
-        positive,
-        negative,
-        resetCounter,
-      } = action.payload;
+      const { id, title, description, positive, negative, resetCounter } =
+        action.payload;
       const habit = state.habits.find((habit) => habit.id === id);
       if (habit) {
         habit.title = title;
@@ -97,6 +109,7 @@ export const {
   deleteHabit,
   incrementCounter,
   decrementCounter,
+  reorderHabits,
 } = habitsSlice.actions;
 
 export default habitsSlice.reducer;

@@ -8,7 +8,7 @@ interface HabitDropdownMenuProps {
   onDelete: () => void;
 }
 
-const HabitDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
+const HabitsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
   habit,
   onDelete,
 }) => {
@@ -60,4 +60,4 @@ const HabitDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
   );
 };
 
-export default HabitDropdownMenu;
+export default HabitsDropdownMenu;
