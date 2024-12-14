@@ -99,7 +99,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 backdrop-blur-sm flex items-center justify-center ${
+      className={`fixed z-50 inset-0 backdrop-blur-sm flex items-center justify-center ${
         isOpen ? "visible" : "invisible"
       }`}
     >

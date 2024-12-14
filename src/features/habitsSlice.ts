@@ -30,7 +30,8 @@ const habitsSlice = createSlice({
       state,
       action: PayloadAction<{ sourceIndex: number; destinationIndex: number }>
     ) => {
-      const { sourceIndex, destinationIndex } = action.payload;
+      const sourceIndex = action.payload.sourceIndex;
+      const destinationIndex = action.payload.destinationIndex;
 
       // Remove the habit from the source index
       const [reorderedHabit] = state.habits.splice(sourceIndex, 1);
