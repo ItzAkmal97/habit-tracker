@@ -26,24 +26,6 @@ const habitsSlice = createSlice({
   name: "habits",
   initialState,
   reducers: {
-    reorderHabits: (
-      state,
-      action: PayloadAction<{ sourceIndex: number; destinationIndex: number }>
-    ) => {
-      const sourceIndex = action.payload.sourceIndex;
-      const destinationIndex = action.payload.destinationIndex;
-
-      // Remove the habit from the source index
-      const [reorderedHabit] = state.habits.splice(sourceIndex, 1);
-
-      // Insert the habit at the destination index
-      state.habits.splice(destinationIndex, 0, reorderedHabit);
-
-      // Optionally, update order property for each habit
-      state.habits.forEach((habit, index) => {
-        habit.order = index;
-      });
-    },
     setHabits: (state, action: PayloadAction<Habit[]>) => {
       state.habits = action.payload;
     },
@@ -100,6 +82,13 @@ const habitsSlice = createSlice({
         habit.negativeCount = (habit.negativeCount || 0) - 1;
       }
     },
+
+    // resetCounter:(state, action: PayloadAction<{ habitId: string }>) => {
+    //   const habit = state.habits.find((h) => h.id === action.payload.habitId);
+    //   if (habit) {
+        
+    //   }
+    // },
   },
 });
 
@@ -110,7 +99,6 @@ export const {
   deleteHabit,
   incrementCounter,
   decrementCounter,
-  reorderHabits,
 } = habitsSlice.actions;
 
 export default habitsSlice.reducer;

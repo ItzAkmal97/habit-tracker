@@ -9,6 +9,7 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import { RootState } from "./store/store";
 import Loading from "./components/Loading";
 import { useAuth } from "./util/useAuth";
+import { ThemeProvider } from "./components/themes/theme-provider";
 
 function App() {
   const { isLoggedIn } = useSelector(
@@ -23,7 +24,7 @@ function App() {
     {
       path: "/",
       element: <RootLayout />,
-      errorElement: <Error />,
+      errorElement: <Error isLoggedIn={isLoggedIn} />,
       children: [
         {
           path: "/",
@@ -51,8 +52,10 @@ function App() {
 
   return (
     <>
-      <Loading isLoading={isLoading} cssClassName="h-screen bg-blue" />
+      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <Loading isLoading={isLoading} cssClassName="min-h-screen" />
       {!isLoading && <RouterProvider router={router} />}
+      </ThemeProvider>
     </>
   );
 }

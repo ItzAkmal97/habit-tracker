@@ -11,7 +11,6 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { Mail } from "lucide-react";
-import Toast from "./Toast";
 import { FirebaseError } from "firebase/app";
 import { Eye, EyeOff } from "lucide-react";
 import { RootState } from "../store/store";
@@ -24,6 +23,16 @@ import {
 } from "../features/loginSignupSlice";
 import LandingPageHeader from "./LandingPageHeader";
 import { setIsLoggedIn } from "../features/authenticationSlice";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import {
+  Toast,
+  ToastProvider,
+  ToastViewport,
+  ToastTitle,
+  ToastDescription,
+  ToastClose,
+} from "./ui/toast";
 
 type SignupData = {
   username: string;
@@ -110,13 +119,13 @@ const SignupPage: React.FC = () => {
       if (error instanceof FirebaseError) {
         dispatch(setShowToast(true));
         dispatch(setToastMessage("Google Login Failed, Please Try Again"));
-        dispatch(setToastColor("bg-red-500 text-red-900 border-red-600"));
+        dispatch(setToastColor("destructive"));
       } else {
         dispatch(setShowToast(true));
         dispatch(
           setToastMessage("An Unexpected Error Occurred, Please Try Again")
         );
-        dispatch(setToastColor("bg-red-500 text-red-900 border-red-600"));
+        dispatch(setToastColor("destructive"));
       }
     }
   };
@@ -151,18 +160,18 @@ const SignupPage: React.FC = () => {
         error.code === "auth/email-already-in-use"
       ) {
         dispatch(setToastMessage("Email Already In Use"));
-        dispatch(setToastColor("bg-red-500 text-red-100 border-red-600"));
+        dispatch(setToastColor("destructive"));
         dispatch(setShowToast(true));
       } else if (
         error instanceof FirebaseError &&
         error.code === "auth/invalid-email"
       ) {
         dispatch(setToastMessage("Invalid Email"));
-        dispatch(setToastColor("bg-red-500 text-red-100 border-red-600"));
+        dispatch(setToastColor("destructive"));
         dispatch(setShowToast(true));
       } else {
         dispatch(setToastMessage("Registration Failed"));
-        dispatch(setToastColor("bg-red-500 text-red-100 border-red-600"));
+        dispatch(setToastColor("destructive"));
         dispatch(setShowToast(true));
       }
     }
@@ -173,129 +182,139 @@ const SignupPage: React.FC = () => {
   return (
     <>
       <LandingPageHeader />
-      <div className="bg-blue h-full md:h-screen text-gold">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col gap-6 sm:flex sm:flex-row sm:justify-around md:items-center md:gap-16 pt-20 ">
-            <div className="flex flex-col justify-center gap-6 max-w-xl">
-              <h1 className="text-7xl font-semibold">
-                Turn Habits into Herds of Success.
-              </h1>
-              <p className="text-stone-100 font-semibold">
-                Take charge of your daily routines and watch your goals come to
-                life! Join HabitHerd and build better habits one step at a time,
-                all while earning rewards and tracking your progress.
-              </p>
-            </div>
-            <div className="sm:flex sm:flex-col sm:justify-center sm:items-center py-16">
-              <h1 className=" text-3xl md:text-4xl mb-2">Sign Up For Free</h1>
-              <form
-                className="flex flex-col gap-2 mt-8"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <div className="flex flex-col gap-4">
-                  {showToast && (
-                    <Toast
-                      message={toastMessage}
-                      isVisible={showToast}
-                      onClose={() => dispatch(setShowToast(false))}
-                      colors={toastColor}
-                    />
-                  )}
-                  <input
-                    type="text"
-                    placeholder="Username"
-                    className="h-8 w-full p-2 text-blue"
-                    {...register("username")}
-                  />
-                  {errors.username && (
-                    <p className="text-red-500 font-bold">
-                      {errors.username.message}
-                    </p>
-                  )}
-
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="h-8 w-full p-2 text-blue"
-                    {...register("email")}
-                  />
-
-                  {errors.email && (
-                    <p className="text-red-500 font-bold">
-                      {errors.email.message}
-                    </p>
-                  )}
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      className="h-8 w-full text-blue p-2"
-                      {...register("password")}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => dispatch(setShowPassword(!showPassword))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
-                  </div>
-                  {errors.password && (
-                    <p className="text-red-500 font-bold">
-                      {errors.password.message}
-                    </p>
-                  )}
-                  <div className="relative">
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Confirm Password"
-                      className="h-8 w-full text-blue p-2 "
-                      {...register("confirmPassword")}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => dispatch(setShowPassword(!showPassword))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className="text-red-500 font-bold">
-                      {errors.confirmPassword.message}
-                    </p>
-                  )}
-                </div>
+      <ToastProvider>
+        <div className="h-full md:h-screen text-black">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="flex flex-col gap-6 sm:flex sm:flex-row sm:justify-around md:items-center md:gap-16 pt-20 ">
+              <div className="flex flex-col justify-center gap-6 max-w-xl">
+                <h1 className="text-7xl font-semibold">
+                  Turn Habits into Herds of Success.
+                </h1>
                 <p className="font-semibold">
-                  By clicking the button below, you are indicating that you have
-                  read and agree to the Terms of Service and Privacy Policy.
+                  Take charge of your daily routines and watch your goals come
+                  to life! Join HabitHerd and build better habits one step at a
+                  time, all while earning rewards and tracking your progress.
                 </p>
-                <button
-                  type="submit"
-                  className="bg-gold text-blue font-semibold py-4 rounded-md hover:bg-yellow-400 duration-300 ease-in-out mt-4"
+              </div>
+              <div className="sm:flex sm:flex-col sm:justify-center sm:items-center py-16">
+                <h1 className=" text-3xl md:text-4xl mb-2">Sign Up For Free</h1>
+                <form
+                  className="flex flex-col gap-2 mt-8"
+                  onSubmit={handleSubmit(onSubmit)}
                 >
-                  Sign up
-                </button>
+                  <div className="flex flex-col gap-4">
+                    <Toast
+                      open={showToast}
+                      onOpenChange={() => dispatch(setShowToast(false))}
+                      variant={toastColor as "default" | "destructive"}
+                    >
+                      <div className="grid gap-1">
+                        <ToastTitle>Signup Error</ToastTitle>
+                        <ToastDescription>{toastMessage}</ToastDescription>
+                      </div>
+                      <ToastClose />
+                    </Toast>
 
-                <div className="flex items-center gap-4">
-                  <div className="h-px bg-gold flex-1"></div>
-                  <span className="text-gold font-medium">OR</span>
-                  <div className="h-px bg-gold flex-1"></div>
-                </div>
+                    <Input
+                      type="text"
+                      placeholder="Username"
+                      {...register("username")}
+                    />
+                    {errors.username && (
+                      <p className="text-red-500 font-bold">
+                        {errors.username.message}
+                      </p>
+                    )}
 
-                <button
-                  type="button"
-                  onClick={handleGoogleAuth}
-                  className="flex w-full items-start justify-center gap-2 hover:border-gold duration-500 ease-in-out border border-[#F5E7B4] font-semibold py-3 px-6 rounded-md"
-                >
-                  <Mail size={20} />
-                  Start with Google
-                </button>
-              </form>
+                    <Input
+                      type="email"
+                      placeholder="Email"
+                      {...register("email")}
+                    />
+
+                    {errors.email && (
+                      <p className="text-red-500 font-bold">
+                        {errors.email.message}
+                      </p>
+                    )}
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Password"
+                        {...register("password")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => dispatch(setShowPassword(!showPassword))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
+                    {errors.password && (
+                      <p className="text-red-500 font-bold">
+                        {errors.password.message}
+                      </p>
+                    )}
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Confirm Password"
+                        {...register("confirmPassword")}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => dispatch(setShowPassword(!showPassword))}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                      >
+                        {showPassword ? (
+                          <EyeOff size={20} />
+                        ) : (
+                          <Eye size={20} />
+                        )}
+                      </button>
+                    </div>
+                    {errors.confirmPassword && (
+                      <p className="text-red-500 font-bold">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
+                  </div>
+                  <p className="font-semibold">
+                    By clicking the button below, you are indicating that you
+                    have read and agree to the Terms of Service and Privacy
+                    Policy.
+                  </p>
+                  <Button type="submit" variant="default" size="lg">
+                    Sign up
+                  </Button>
+
+                  <div className="flex items-center gap-4">
+                    <div className="h-px bg-black flex-1"></div>
+                    <span className="text-black font-medium">OR</span>
+                    <div className="h-px bg-black flex-1"></div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="lg"
+                    onClick={handleGoogleAuth}
+                  >
+                    <Mail size={20} />
+                    Start with Google
+                  </Button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+        <ToastViewport />
+      </ToastProvider>
     </>
   );
 };

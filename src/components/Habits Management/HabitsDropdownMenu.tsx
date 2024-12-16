@@ -2,6 +2,13 @@ import React, { useState } from "react";
 import { EllipsisVertical, Edit, Trash2 } from "lucide-react";
 import { Habit } from "../../features/habitsSlice";
 import HabitsModal from "./HabitsModal";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 
 interface HabitDropdownMenuProps {
   habit: Habit;
@@ -12,7 +19,6 @@ const HabitsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
   habit,
   onDelete,
 }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleEdit = () => {
@@ -20,43 +26,42 @@ const HabitsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
   };
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="hover:bg-gray-100 rounded-full p-1 transition-colors"
-      >
-        <EllipsisVertical className="w-5 h-5 text-gray-600" />
-      </button>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="h-8 w-8 p-0 hover:bg-accent hover:text-accent-foreground"
+          >
+            <EllipsisVertical className="h-4 w-4" />
+            <span className="sr-only">Open menu</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-[160px]">
+          <DropdownMenuItem 
+            onSelect={handleEdit} 
+            className="cursor-pointer"
+          >
+            <Edit className="mr-2 h-4 w-4" />
+            <span>Edit</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onSelect={onDelete} 
+            className="cursor-pointer text-destructive focus:text-destructive dark:text-red-500 dark:focus:text-red-500"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            <span>Delete</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
-      {isDropdownOpen && (
-        <div className="absolute right-0 top-full z-10 mt-2 w-48 bg-white shadow-lg rounded-md border border-gray-200">
-          <ul className="py-1">
-            <li
-              onClick={handleEdit}
-              className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Edit
-            </li>
-            <li
-              onClick={onDelete}
-              className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-gray-100 cursor-pointer"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              Delete
-            </li>
-          </ul>
-          <HabitsModal
-            habit={habit}
-            isOpen={isModalOpen}
-            onClose={() => {
-              setIsModalOpen(false);
-              setIsDropdownOpen(false);
-            }}
-          />
-        </div>
-      )}
-    </div>
+      <HabitsModal
+        habit={habit}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
   );
 };
 

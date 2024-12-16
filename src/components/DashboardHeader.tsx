@@ -8,6 +8,8 @@ import { signOut } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
 import avatarImg from "../assets/avatar.png";
 import Modal from "./Modal";
+import ModeToggle from "./themes/ModeToggle";
+import GameGold from "./ui/GameGold";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
@@ -55,9 +57,10 @@ const DashboardHeader: React.FC = () => {
   const email = localStorage.getItem("email");
 
   return (
-    <header className="flex justify-between items-center px-6 bg-gold py-2">
+    <header className="flex justify-between items-center px-6 dark:bg-slate-800 border-b py-2">
       <img src={img} alt="Habit" className="w-48" />
       <div className="flex gap-6 items-center flex-row-reverse">
+      <ModeToggle />
         <button
           className="cursor-pointer focus:outline-none"
           onClick={handleDropdownToggle}
@@ -79,22 +82,24 @@ const DashboardHeader: React.FC = () => {
         <button>
           <MessageSquareMore className="w-8 h-8" />
         </button>
+        <GameGold />
+        
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="absolute right-3 top-14 mt-2 w-48 bg-white shadow-lg rounded-md z-10"
+            className="absolute right-3 top-14 mt-2 w-48 dark:bg-gray-700 bg-white shadow-lg rounded-md z-10"
           >
             <ul className="rounded-md">
               <button
                 onClick={() => setIsModelOpen(true)}
-                className="w-full px-4 py-2 hover:bg-gray-100 text-start"
+                className="w-full px-4 py-2 dark:hover:bg-gray-600 hover:bg-gray-100 text-start"
               >
                 Profile
               </button>
 
-              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
+              <li className="px-4 py-2 dark:hover:bg-gray-600 hover:bg-gray-100  cursor-pointer">
                 <a href="mailto:muhammadakmal441@gmail.com">Contact support</a>
               </li>
               <li

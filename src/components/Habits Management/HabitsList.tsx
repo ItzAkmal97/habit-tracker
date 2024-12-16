@@ -5,15 +5,15 @@ import HabitDropdownMenu from "./HabitsDropdownMenu";
 import { db } from "../../util/firebaseConfig";
 import { doc, deleteDoc } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
-import {
-  deleteHabit,
-} from "../../features/habitsSlice";
+import { deleteHabit } from "../../features/habitsSlice";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
 
 const HabitsList: React.FC = () => {
   const habits = useSelector((state: RootState) => state.habits.habits);
   const dispatch = useDispatch();
   const { user } = useAuth();
-
 
   // Add method to handle habit deletion
   const handleDeleteHabit = async (habitId: string) => {
@@ -32,43 +32,53 @@ const HabitsList: React.FC = () => {
   };
 
   return (
-    <div className="w-full bg-gray-100 p-2 rounded-lg shadow-md">
-      {habits.length === 0 && (
-        <p className="text-gray-500 text-center">
-          Add Habits To Get Started Tracking
-        </p>
-      )}
-      {habits.length > 0 && (
-        <div className="w-full">
-          <ul>
-            {habits.map((habit) => (
-              <li key={habit.id} className="p-2 rounded-lg mb-2 bg-gray-300">
-                <div className="p-2 rounded-lg mb-2 flex items-center justify-between bg-gray-300">
-                  <div className="flex items-center gap-2">
-                    <div className="flex flex-col gap-2 justify-center">
-                      <span className="text-gray-800 text-lg">
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle className="text-center dark:text-gray-200">
+          My Habits
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {habits.length === 0 && (
+          <div className="text-center text-muted-foreground py-4">
+            Add Habits To Get Started Tracking
+          </div>
+        )}
+        {habits.length > 0 && (
+          <ScrollArea className="h-[400px] w-full">
+            <ul className="space-y-2">
+              {habits.map((habit) => (
+                <li 
+                  key={habit.id} 
+                  className={cn(
+                    "bg-secondary/50 hover:bg-secondary rounded-lg",
+                    "dark:bg-secondary/30 dark:hover:bg-secondary/50",
+                    "transition-colors duration-200"
+                  )}
+                >
+                  <div className="p-4 flex items-center justify-between">
+                    <div className="flex flex-col">
+                      <span className="text-foreground font-medium">
                         {habit.title}
                       </span>
                       {habit.description && (
-                        <span className="text-gray-600 text-sm">
+                        <span className="text-muted-foreground text-sm">
                           {habit.description}
                         </span>
                       )}
                     </div>
-                  </div>
-                  <div className="flex gap-2">
                     <HabitDropdownMenu
                       habit={habit}
                       onDelete={() => handleDeleteHabit(habit.id)}
                     />
                   </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+                </li>
+              ))}
+            </ul>
+          </ScrollArea>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

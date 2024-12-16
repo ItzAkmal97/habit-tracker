@@ -1,11 +1,17 @@
 import DashboardHeader from "./DashboardHeader";
 import Habits from "./Habits Management/Habits";
+import ProfileHeader from "./ProfileHeader";
+import Rewards from "./Rewards Management/Rewards";
 function DashboardPage() {
   return (
-    <div className="h-full w-full flex flex-col bg-blue">
+    <section className="min-h-screen flex flex-col dark:bg-gray-900">
       <DashboardHeader />
-      <Habits />
-    </div>
+      <ProfileHeader />
+      <div className="grid sm:grid-cols-2 max-w-7xl mx-auto gap-4">
+        <Habits />
+        <Rewards />
+      </div>
+    </section>
   );
 }
 

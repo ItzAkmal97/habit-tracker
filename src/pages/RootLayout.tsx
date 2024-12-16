@@ -1,8 +1,9 @@
 import { Outlet } from "react-router";
 
+
 function RootLayout() {
   return (
-    <main>
+    <main className="min-h-screen bg-white">
       <Outlet />
     </main>
   );

@@ -36,7 +36,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
 
       {/* Modal Container */}
       <div className="relative w-full max-w-md mx-auto animate-fade-in">
-        <div className="relative bg-beige rounded-xl shadow-2xl border-2 overflow-hidden">
+        <div className="relative dark:bg-gray-700 bg-white rounded-xl shadow-2xl border-2 overflow-hidden">
           {/* Modal Header */}
           <div className="flex justify-between items-center p-4 border-b border-navy/10 bg-gold-light">
             <h3 className="text-xl font-bold text-navy">{title}</h3>
@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children, title }) => {
           <div className="flex justify-end p-4 border-t border-navy/10 bg-gold-light">
             <button
               onClick={onClose}
-              className="bg-black hover:bg-slate-800 text-gold rounded-md px-4 py-2 transition-colors duration-200"
+              className="bg-black hover:bg-slate-800 text-white rounded-md px-4 py-2 transition-colors duration-200"
             >
               Close
             </button>
