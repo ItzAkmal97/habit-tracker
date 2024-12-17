@@ -183,21 +183,23 @@ const SignupPage: React.FC = () => {
     <>
       <LandingPageHeader />
       <ToastProvider>
-        <div className="h-full md:h-screen text-black">
+        <div className="h-full md:h-screen text-black dark:text-white dark:bg-gray-900">
           <div className="max-w-7xl mx-auto px-4">
             <div className="flex flex-col gap-6 sm:flex sm:flex-row sm:justify-around md:items-center md:gap-16 pt-20 ">
               <div className="flex flex-col justify-center gap-6 max-w-xl">
-                <h1 className="text-7xl font-semibold">
+                <h1 className="text-7xl font-semibold dark:text-white">
                   Turn Habits into Herds of Success.
                 </h1>
-                <p className="font-semibold">
+                <p className="font-semibold dark:text-gray-300">
                   Take charge of your daily routines and watch your goals come
                   to life! Join HabitHerd and build better habits one step at a
                   time, all while earning rewards and tracking your progress.
                 </p>
               </div>
               <div className="sm:flex sm:flex-col sm:justify-center sm:items-center py-16">
-                <h1 className=" text-3xl md:text-4xl mb-2">Sign Up For Free</h1>
+                <h1 className="text-3xl md:text-4xl mb-2 dark:text-white">
+                  Sign Up For Free
+                </h1>
                 <form
                   className="flex flex-col gap-2 mt-8"
                   onSubmit={handleSubmit(onSubmit)}
@@ -209,8 +211,12 @@ const SignupPage: React.FC = () => {
                       variant={toastColor as "default" | "destructive"}
                     >
                       <div className="grid gap-1">
-                        <ToastTitle>Signup Error</ToastTitle>
-                        <ToastDescription>{toastMessage}</ToastDescription>
+                        <ToastTitle className="dark:text-white">
+                          Signup Error
+                        </ToastTitle>
+                        <ToastDescription className="dark:text-gray-300">
+                          {toastMessage}
+                        </ToastDescription>
                       </div>
                       <ToastClose />
                     </Toast>
@@ -218,6 +224,7 @@ const SignupPage: React.FC = () => {
                     <Input
                       type="text"
                       placeholder="Username"
+                      className="dark:bg-gray-800 dark:text-white dark:border-gray-700"
                       {...register("username")}
                     />
                     {errors.username && (
@@ -229,6 +236,7 @@ const SignupPage: React.FC = () => {
                     <Input
                       type="email"
                       placeholder="Email"
+                      className="dark:bg-gray-800 dark:text-white dark:border-gray-700"
                       {...register("email")}
                     />
 
@@ -241,12 +249,13 @@ const SignupPage: React.FC = () => {
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
+                        className="dark:bg-gray-800 dark:text-white dark:border-gray-700"
                         {...register("password")}
                       />
                       <button
                         type="button"
                         onClick={() => dispatch(setShowPassword(!showPassword))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"
                       >
                         {showPassword ? (
                           <EyeOff size={20} />
@@ -264,12 +273,13 @@ const SignupPage: React.FC = () => {
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="Confirm Password"
+                        className="dark:bg-gray-800 dark:text-white dark:border-gray-700"
                         {...register("confirmPassword")}
                       />
                       <button
                         type="button"
                         onClick={() => dispatch(setShowPassword(!showPassword))}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white"
                       >
                         {showPassword ? (
                           <EyeOff size={20} />
@@ -284,19 +294,26 @@ const SignupPage: React.FC = () => {
                       </p>
                     )}
                   </div>
-                  <p className="font-semibold">
+                  <p className="font-semibold dark:text-gray-300">
                     By clicking the button below, you are indicating that you
                     have read and agree to the Terms of Service and Privacy
                     Policy.
                   </p>
-                  <Button type="submit" variant="default" size="lg">
+                  <Button
+                    type="submit"
+                    variant="default"
+                    size="lg"
+                    className="dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                  >
                     Sign up
                   </Button>
 
                   <div className="flex items-center gap-4">
-                    <div className="h-px bg-black flex-1"></div>
-                    <span className="text-black font-medium">OR</span>
-                    <div className="h-px bg-black flex-1"></div>
+                    <div className="h-px bg-black dark:bg-gray-600 flex-1"></div>
+                    <span className="text-black dark:text-white font-medium">
+                      OR
+                    </span>
+                    <div className="h-px bg-black dark:bg-gray-600 flex-1"></div>
                   </div>
 
                   <Button
@@ -304,6 +321,7 @@ const SignupPage: React.FC = () => {
                     variant="outline"
                     size="lg"
                     onClick={handleGoogleAuth}
+                    className="dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
                   >
                     <Mail size={20} />
                     Start with Google
