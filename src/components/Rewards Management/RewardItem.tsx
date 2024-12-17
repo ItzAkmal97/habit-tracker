@@ -29,18 +29,23 @@ const RewardItem: React.FC<RewardItemProps> = ({ onDelete, reward }) => {
       >
         <div className="flex-grow">
           <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col">
               <h3 className="text-lg font-semibold text-black dark:text-white">
                 {reward.title}
               </h3>
               {reward.notes && (
-                <p className="text-gray-600 dark:text-gray-300 text-sm">
+                <span
+                  className="
+                text-gray-600 dark:text-gray-300 text-sm mt-1 
+                break-all whitespace-normal block w-full
+              "
+                >
                   {reward.notes}
-                </p>
+                </span>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center">
               <RewardsDropdownMenu reward={reward} onDelete={onDelete} />
               <Button
                 onClick={handleGoldCalc}
@@ -70,7 +75,7 @@ const RewardItem: React.FC<RewardItemProps> = ({ onDelete, reward }) => {
                       strokeWidth="5"
                     />
                   </svg>
-                  <span className="text-gray-600 dark:text-gray-300 font-medium">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium break-all whitespace-normal block">
                     {reward.cost}
                   </span>
                 </div>

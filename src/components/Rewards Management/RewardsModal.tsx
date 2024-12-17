@@ -128,6 +128,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
               type="number"
               value={cost}
               min={0}
+              max={200}
               onChange={(e) => setCost(Number(e.target.value))}
               className="col-span-3 dark:bg-black dark:text-gray-200"
             />

@@ -158,6 +158,7 @@ const Habits: React.FC = () => {
             onReorder={handleReorder}
             className="w-full"
           >
+           
             {habits.map((habit) => (
               <HabitItem
                 key={habit.id}
@@ -165,6 +166,8 @@ const Habits: React.FC = () => {
                 onDelete={() => handleDeleteHabit(habit.id)}
               />
             ))}
+         
+            
           </Reorder.Group>
         )}
       </div>
