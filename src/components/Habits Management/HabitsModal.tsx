@@ -1,6 +1,6 @@
 import React, { useState} from "react";
 import { useDispatch } from "react-redux";
-import { editHabit, deleteHabit, Habit } from "../../features/habitsSlice";
+import { editHabit, deleteHabit, Habit} from "../../features/habitsSlice";
 import { db } from "../../util/firebaseConfig";
 import { doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
@@ -36,7 +36,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
     !habit.positive && habit.negative ? 'negative' : 
     'both'
   );
-  const [resetCounter, setResetCounter] = useState<string>('never');
+  // const [isReset, setIsReset] = useState<ResetCounter>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { user } = useAuth();
@@ -53,9 +53,9 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
     setHabitType(value);
   };
 
-  const handleResetCounterChange = (value: string) => {
-    setResetCounter(value);
-  };
+  // const handleResetCounterChange = (value: ResetCounter) => {
+  //   setIsReset(value);
+  // };
 
   const handleDeleteHabit = async (habitId: string) => {
     if (!user) return;
@@ -86,7 +86,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
         description: notes,
         positive: isPositive,
         negative: isNegative,
-        resetCounter
+        // resetCounter: isReset,
       });
 
       dispatch(
@@ -96,7 +96,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
           description: notes,
           positive: isPositive,
           negative: isNegative,
-          resetCounter: resetCounter,
+          // resetCounter: isReset,
         })
       );
 
@@ -184,7 +184,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
             >
               Reset
             </label>
-            <Select value={resetCounter} onValueChange={handleResetCounterChange}>
+            <Select>
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select reset frequency" />
               </SelectTrigger>

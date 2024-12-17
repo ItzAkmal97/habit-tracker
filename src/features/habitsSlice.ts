@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-export type ResetCounter = {
-  resetCounter: "Daily" | "Weekly" | "Monthly";
-};
+// export type ResetCounter = {
+//   resetCounter: "Daily" | "Weekly" | "Monthly";
+// };
 export interface Habit {
   id: string;
   title: string;
@@ -10,7 +10,7 @@ export interface Habit {
   negative: boolean;
   positiveCount?: number;
   negativeCount?: number;
-  resetCounter?: ResetCounter;
+  // resetCounter?: ResetCounter;
   order?: number;
 }
 
@@ -54,10 +54,10 @@ const habitsSlice = createSlice({
         description: string;
         positive: boolean;
         negative: boolean;
-        resetCounter: ResetCounter;
+        // resetCounter: ResetCounter;
       }>
     ) => {
-      const { id, title, description, positive, negative, resetCounter } =
+      const { id, title, description, positive, negative,} =
         action.payload;
       const habit = state.habits.find((habit) => habit.id === id);
       if (habit) {
@@ -65,7 +65,7 @@ const habitsSlice = createSlice({
         habit.description = description;
         habit.positive = positive;
         habit.negative = negative;
-        habit.resetCounter = resetCounter;
+        // habit.resetCounter = resetCounter;
       }
     },
 
