@@ -32,11 +32,18 @@ const habitsSlice = createSlice({
 
     addHabit: (state, action: PayloadAction<Habit>) => {
       if (!state.habits.some((habit) => habit.id === action.payload.id)) {
-        state.habits.push({
+        state.habits.unshift({
           ...action.payload,
           positiveCount: 0,
           negativeCount: 0,
+          order: 0,
         });
+      }
+
+      for (let i = 0; i < state.habits.length; i++) {
+        if (i > 0) {
+          state.habits[i].order = 1;
+        }
       }
     },
 
@@ -48,14 +55,7 @@ const habitsSlice = createSlice({
 
     editHabit: (
       state,
-      action: PayloadAction<{
-        id: string;
-        title: string;
-        description: string;
-        positive: boolean;
-        negative: boolean;
-        // resetCounter: ResetCounter;
-      }>
+      action: PayloadAction<Habit>
     ) => {
       const { id, title, description, positive, negative,} =
         action.payload;

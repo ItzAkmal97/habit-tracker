@@ -21,13 +21,11 @@ import {
 import { useAuth } from "../../util/useAuth";
 import Loading from "../Loading";
 import { RootState } from "../../store/store";
-import HabitsModal from "./HabitsModal";
 import { Input } from "../ui/input";
 
 const Habits: React.FC = () => {
   const [input, setInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isHabitsModalOpen, setIsHabitsModalOpen] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { user } = useAuth();
   const habits = useSelector((state: RootState) => state.habits.habits);
@@ -87,14 +85,13 @@ const Habits: React.FC = () => {
         id: uuidv4(),
         title: input,
         description: "",
-        positive: false,
-        negative: false,
+        positive: true,
+        negative: true,
         positiveCount: 0,
         negativeCount: 0,
-        order: habits.length,
+        order: 0,
       };
 
-      setIsHabitsModalOpen(true);
       dispatch(addHabit(newHabit));
       setInput("");
       await saveHabit(newHabit.id, newHabit);
@@ -104,7 +101,7 @@ const Habits: React.FC = () => {
   const handleReorder = async (newOrder: Habit[]) => {
     // Update local state
     dispatch(setHabits(newOrder));
-
+  
     if (user) {
       try {
         // Update order in Firestore
@@ -112,7 +109,7 @@ const Habits: React.FC = () => {
           const habitRef = doc(db, "users", user.uid, "habits", habit.id);
           return updateDoc(habitRef, { order: index });
         });
-
+  
         await Promise.all(batch);
       } catch (error) {
         console.error("Error updating habit order:", error);
@@ -138,7 +135,7 @@ const Habits: React.FC = () => {
   return (
     <div className="flex flex-col gap-4 m-4">
       <h1 className="text-start text-2xl text-black dark:text-white">Habits</h1>
-      <div className="flex flex-col gap-2 items-start bg-gray-200 dark:bg-gray-800 p-2 rounded-md">
+      <div className="flex flex-col gap-2 items-start bg-gray-200 dark:bg-gray-800 p-2 rounded-sm">
         <div className="w-full rounded flex gap-2">
           <Input
             placeholder="Add a Habit"
@@ -148,23 +145,17 @@ const Habits: React.FC = () => {
             className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
-        {isHabitsModalOpen && (
-          <HabitsModal
-            onClose={() => setIsHabitsModalOpen(false)}
-            isOpen={isHabitsModalOpen}
-            habit={habits[habits.length - 1]}
-          />
-        )}
+
         {isLoading ? (
           <Loading
             isLoading={isLoading}
             cssClassName="w-full bg-white dark:bg-gray-900 p-10"
           />
         ) : (
-          <Reorder.Group 
-            axis="y" 
-            values={habits} 
-            onReorder={handleReorder} 
+          <Reorder.Group
+            axis="y"
+            values={habits}
+            onReorder={handleReorder}
             className="w-full"
           >
             {habits.map((habit) => (

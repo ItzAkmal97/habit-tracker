@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import img from "../assets/habit.png";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MessageSquareMore } from "lucide-react";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 import { signOut } from "firebase/auth";
@@ -10,12 +10,15 @@ import avatarImg from "../assets/avatar.png";
 import Modal from "./Modal";
 import ModeToggle from "./themes/ModeToggle";
 import GameGold from "./ui/GameGold";
+import { RootState } from "../store/store";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
-
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const {totalGold} = useSelector((state: RootState) => state.reward);
+
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleDropdownToggle = () => {
@@ -82,7 +85,7 @@ const DashboardHeader: React.FC = () => {
         <button>
           <MessageSquareMore className="w-8 h-8" />
         </button>
-        <GameGold />
+        <GameGold gold={totalGold}/>
         
 
         {/* Dropdown Menu */}

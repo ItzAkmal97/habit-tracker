@@ -1,4 +1,7 @@
-const GameGold = () => {
+interface GoldProps {
+  gold: number
+}
+const GameGold: React.FC<GoldProps> = ({gold}) => {
   return (
     <div className="flex items-center gap-1">
       <svg
@@ -13,29 +16,17 @@ const GameGold = () => {
           r="90"
           fill="gold"
           stroke="darkgoldenrod"
-          stroke-width="10"
+          strokeWidth="10"
         />
 
         <polygon
           points="100,30 120,80 175,80 130,115 150,170 100,140 50,170 70,115 25,80 80,80"
           fill="orange"
           stroke="darkorange"
-          stroke-width="5"
+          strokeWidth="5"
         />
-
-        <text
-          x="50%"
-          y="50%"
-          text-anchor="middle"
-          dominant-baseline="middle"
-          font-family="Arial, sans-serif"
-          font-size="24"
-          fill="white"
-          stroke="black"
-          stroke-width="1"
-        ></text>
       </svg>
-      <span className="font-extrabold text-lg">129</span>
+      <span className="font-extrabold text-lg">{gold}</span>
     </div>
   );
 };

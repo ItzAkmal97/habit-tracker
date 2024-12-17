@@ -51,13 +51,13 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
       <div
         className="
         flex items-center justify-between 
-        p-3 bg-white dark:bg-gray-700 rounded-md mb-2 
+        p-3 bg-white dark:bg-gray-700  mb-2 
         transition-all duration-200 
         cursor-grab
         active:cursor-grabbing
       "
       >
-        <div className="flex-grow mr-4">
+        <div className="flex-grow">
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-semibold text-black dark:text-white">{habit.title}</h3>
             <HabitsDropdownMenu habit={habit} onDelete={onDelete} />

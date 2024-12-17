@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { editHabit, deleteHabit, Habit} from "../../features/habitsSlice";
 import { db } from "../../util/firebaseConfig";
@@ -36,10 +36,14 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
     !habit.positive && habit.negative ? 'negative' : 
     'both'
   );
-  // const [isReset, setIsReset] = useState<ResetCounter>('');
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const dispatch = useDispatch();
   const { user } = useAuth();
+
+
+    
+
+
 
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
@@ -52,10 +56,6 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
   const handleHabitTypeChange = (value: string) => {
     setHabitType(value);
   };
-
-  // const handleResetCounterChange = (value: ResetCounter) => {
-  //   setIsReset(value);
-  // };
 
   const handleDeleteHabit = async (habitId: string) => {
     if (!user) return;
@@ -86,7 +86,6 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
         description: notes,
         positive: isPositive,
         negative: isNegative,
-        // resetCounter: isReset,
       });
 
       dispatch(
@@ -96,12 +95,12 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
           description: notes,
           positive: isPositive,
           negative: isNegative,
-          // resetCounter: isReset,
         })
       );
 
       setIsSubmitting(false);
       onClose();
+      
     }
   };
 
