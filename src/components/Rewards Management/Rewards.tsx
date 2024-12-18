@@ -140,27 +140,28 @@ const Rewards: React.FC = () => {
             className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
           />
         </div>
-        {isLoading ? (
-          <Loading
-            cssClassName="w-full bg-white dark:bg-slate-700"
-            isLoading={isLoading}
-          />
-        ) : (
-          <Reorder.Group
-            values={rewards}
-            axis="y"
-            onReorder={handleRewardReorder}
-            className="w-full"
-          >
-            {rewards.map((reward) => (
-              <RewardItem
-                key={reward.id}
-                reward={reward}
-                onDelete={async () => handleDeleteReward(reward.id)}
-              />
-            ))}
-          </Reorder.Group>
-        )}
+
+          {isLoading ? (
+            <Loading
+              cssClassName="w-full bg-white dark:bg-slate-700"
+              isLoading={isLoading}
+            />
+          ) : (
+            <Reorder.Group
+              values={rewards}
+              axis="y"
+              onReorder={handleRewardReorder}
+              className="w-full"
+            >
+              {rewards.map((reward) => (
+                <RewardItem
+                  key={reward.id}
+                  reward={reward}
+                  onDelete={async () => handleDeleteReward(reward.id)}
+                />
+              ))}
+            </Reorder.Group>
+          )}
       </div>
     </div>
   );

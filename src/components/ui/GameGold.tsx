@@ -1,5 +1,5 @@
 interface GoldProps {
-  gold: number
+  gold: string
 }
 const GameGold: React.FC<GoldProps> = ({gold}) => {
   return (

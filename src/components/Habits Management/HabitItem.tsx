@@ -8,6 +8,8 @@ import { incrementCounter, decrementCounter } from "../../features/habitsSlice";
 import { db } from "../../util/firebaseConfig";
 import { doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
+import { updateXPAndLevel } from "../../features/xpLevelSlice";
+import { incrementTotalGold } from "../../features/rewardSlice";
 
 interface HabitItemProps {
   habit: Habit;
@@ -20,6 +22,12 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
 
   const handlePositive = async () => {
     dispatch(incrementCounter({ habitId: habit.id }));
+    dispatch(updateXPAndLevel({ xpGain: 10 }));
+    dispatch(
+      incrementTotalGold(parseFloat((Math.random() * 6 + 1).toFixed(2)))
+    );
+
+
     try {
       if (!user) return;
 
@@ -33,7 +41,10 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
   };
 
   const handleNegative = async () => {
+    // Dispatch action to decrement habit counter and XP
     dispatch(decrementCounter({ habitId: habit.id }));
+    dispatch(updateXPAndLevel({ xpGain: -5 })); // 5 XP penalty for negative action
+
     try {
       if (!user) return;
 
@@ -67,7 +78,7 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
 
           {habit.description && (
             <span
-            className="
+              className="
             text-gray-600 dark:text-gray-300 text-sm mt-1 
             break-all whitespace-normal block w-full
           "

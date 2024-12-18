@@ -11,13 +11,14 @@ import Modal from "./Modal";
 import ModeToggle from "./themes/ModeToggle";
 import GameGold from "./ui/GameGold";
 import { RootState } from "../store/store";
+import { getTotalGold, setTotalGold } from "@/features/rewardSlice";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const {totalGold} = useSelector((state: RootState) => state.reward);
+  const { totalGold } = useSelector((state: RootState) => state.reward);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -33,6 +34,21 @@ const DashboardHeader: React.FC = () => {
       setIsDropdownOpen(false);
     }
   };
+
+  useEffect(() => {
+    const fetchTotalGold = async () => {
+      try {
+        
+        const gold = await getTotalGold(); // Fetch totalGold
+        if (gold !== null) dispatch(setTotalGold(gold));
+      } catch (error) {
+        console.error("Error fetching total gold:", error);
+      }
+
+    };
+
+    fetchTotalGold();
+  }, [dispatch]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -63,7 +79,7 @@ const DashboardHeader: React.FC = () => {
     <header className="flex justify-between items-center px-6 dark:bg-slate-800 border-b py-2">
       <img src={img} alt="Habit" className="w-48" />
       <div className="flex gap-6 items-center flex-row-reverse">
-      <ModeToggle />
+        <ModeToggle />
         <button
           className="cursor-pointer focus:outline-none"
           onClick={handleDropdownToggle}
@@ -85,8 +101,7 @@ const DashboardHeader: React.FC = () => {
         <button>
           <MessageSquareMore className="w-8 h-8" />
         </button>
-        <GameGold gold={totalGold}/>
-        
+        <GameGold gold={totalGold.toFixed(2)} />
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (

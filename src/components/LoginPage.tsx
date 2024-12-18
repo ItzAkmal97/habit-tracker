@@ -139,11 +139,13 @@ function LoginPage() {
         }
         const localLoggedin = dispatch(setIsLoggedIn(true));
 
+        
         localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
         navigate("/dashboard");
       } else {
         console.log("No User Document Found");
       }
+
     } catch (error: unknown) {
       console.error(typeof error, error);
 

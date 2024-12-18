@@ -4,6 +4,7 @@ import AuthenticationStateSliceReducer from "../features/authenticationSlice";
 import firebaseDbStateSliceReducer from "../features/firebaseDbSlice";
 import habitsSliceReducer from "../features/habitsSlice";
 import rewardSliceReducer from '../features/rewardSlice'
+import xpLevelSliceReducer from '../features/xpLevelSlice';
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +12,8 @@ export const store = configureStore({
     authentication: AuthenticationStateSliceReducer,
     firebaseDb: firebaseDbStateSliceReducer,
     habits: habitsSliceReducer,
-    reward: rewardSliceReducer
+    reward: rewardSliceReducer,
+    xpLevel: xpLevelSliceReducer
   },
 });
 

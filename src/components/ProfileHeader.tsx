@@ -1,10 +1,28 @@
 import { Progress } from "@/components/ui/progress";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../store/store";
+import { useEffect } from "react";
+import { fetchXPLevelData, updateXPAndLevel } from "../features/xpLevelSlice";
 
 const ProfileHeader: React.FC = () => {
+  const dispatch = useDispatch();
+  const { xp, level, totalXpForNextLevel } = useSelector((state: RootState) => state.xpLevel);
   const googlePhoto = localStorage.getItem("photoURL");
   const username = localStorage.getItem("username");
-  const xp = 12;
-  const level = 12;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchXPLevelData();
+        // Dispatch the loaded data to update the state
+        dispatch(updateXPAndLevel({ xpGain: data.xp }));
+      } catch (error) {
+        console.error("Error fetching XP data:", error);
+      }
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   return (
     <div className="flex items-center gap-4 p-4 dark:bg-slate-600 bg-gray-300">
@@ -17,21 +35,18 @@ const ProfileHeader: React.FC = () => {
       </div>
       <div className="flex-1">
         <h2 className="text-xl font-bold">{username ?? ""}</h2>
+        <span className="text-sm dark:text-gray-300">Level: {level.toLocaleString()}</span>
         <div className="mt-2 space-y-2 md:w-1/2">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">XP</span>
             <span className="text-sm font-medium">
-              {xp.toLocaleString()}/100
+              {xp.toLocaleString()}/{totalXpForNextLevel.toLocaleString()}
             </span>
           </div>
-          <Progress value={xp} max={100} className=""/>
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">level</span>
-            <span className="text-sm font-medium">
-              {level.toLocaleString()}
-            </span>
-          </div>
-          <Progress value={level} max={100} />
+          <Progress 
+            currentValue={xp} 
+            maxValue={totalXpForNextLevel}
+          />
         </div>
       </div>
       <div className="flex-1 text-center">
