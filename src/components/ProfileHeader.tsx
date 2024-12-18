@@ -2,7 +2,7 @@ import { Progress } from "@/components/ui/progress";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
 import { useEffect } from "react";
-import { fetchXPLevelData, updateXPAndLevel } from "../features/xpLevelSlice";
+import { fetchXPLevelData, setXpLevel} from "../features/xpLevelSlice";
 
 const ProfileHeader: React.FC = () => {
   const dispatch = useDispatch();
@@ -14,8 +14,7 @@ const ProfileHeader: React.FC = () => {
     const fetchData = async () => {
       try {
         const data = await fetchXPLevelData();
-        // Dispatch the loaded data to update the state
-        dispatch(updateXPAndLevel({ xpGain: data.xp }));
+        dispatch(setXpLevel(data));
       } catch (error) {
         console.error("Error fetching XP data:", error);
       }
@@ -35,12 +34,12 @@ const ProfileHeader: React.FC = () => {
       </div>
       <div className="flex-1">
         <h2 className="text-xl font-bold">{username ?? ""}</h2>
-        <span className="text-sm dark:text-gray-300">Level: {level.toLocaleString()}</span>
+        <span className="text-sm dark:text-gray-300">Level: {level?.toLocaleString()}</span>
         <div className="mt-2 space-y-2 md:w-1/2">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">XP</span>
             <span className="text-sm font-medium">
-              {xp.toLocaleString()}/{totalXpForNextLevel.toLocaleString()}
+              {xp?.toLocaleString()}/{totalXpForNextLevel?.toLocaleString()}
             </span>
           </div>
           <Progress 
