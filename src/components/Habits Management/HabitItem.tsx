@@ -10,6 +10,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
 import { updateXPAndLevel } from "../../features/xpLevelSlice";
 import { incrementTotalGold } from "../../features/rewardSlice";
+import ResetTimer from "./ResetTimer";
 
 interface HabitItemProps {
   habit: Habit;
@@ -26,7 +27,6 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
     dispatch(
       incrementTotalGold(parseFloat((Math.random() * 6 + 1).toFixed(2)))
     );
-
 
     try {
       if (!user) return;
@@ -59,6 +59,7 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
 
   return (
     <Reorder.Item value={habit} id={habit.id} className="list-none">
+      
       <div
         className="
         flex items-center justify-between 
@@ -73,7 +74,16 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
             <h3 className="text-lg font-semibold text-black dark:text-white">
               {habit.title}
             </h3>
+            <div className="flex justify-end items-end">
+            {habit.resetFrequency && (
+          <ResetTimer 
+            resetFrequency={habit.resetFrequency} 
+            lastResetDate={habit.lastResetDate} 
+          />
+        )}
+            </div>
             <HabitsDropdownMenu habit={habit} onDelete={onDelete} />
+            
           </div>
 
           {habit.description && (
@@ -109,7 +119,7 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit, onDelete }) => {
             )}
           </div>
         </div>
-      </div>
+        </div>
     </Reorder.Item>
   );
 };

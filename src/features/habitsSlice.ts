@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-// export type ResetCounter = {
-//   resetCounter: "Daily" | "Weekly" | "Monthly";
-// };
+export type ResetFrequency = "Daily" | "Weekly" | "Monthly";
+import { addWeeks, addMonths, startOfDay } from "date-fns";
+
 export interface Habit {
   id: string;
   title: string;
@@ -10,8 +10,9 @@ export interface Habit {
   negative: boolean;
   positiveCount?: number;
   negativeCount?: number;
-  // resetCounter?: ResetCounter;
+  resetFrequency?: ResetFrequency;
   order?: number;
+  lastResetDate?: string;
 }
 
 interface HabitsState {
@@ -53,19 +54,14 @@ const habitsSlice = createSlice({
       );
     },
 
-    editHabit: (
-      state,
-      action: PayloadAction<Habit>
-    ) => {
-      const { id, title, description, positive, negative,} =
-        action.payload;
+    editHabit: (state, action: PayloadAction<Habit>) => {
+      const { id, title, description, positive, negative } = action.payload;
       const habit = state.habits.find((habit) => habit.id === id);
       if (habit) {
         habit.title = title;
         habit.description = description;
         habit.positive = positive;
         habit.negative = negative;
-        // habit.resetCounter = resetCounter;
       }
     },
 
@@ -83,14 +79,61 @@ const habitsSlice = createSlice({
       }
     },
 
-    // resetCounter:(state, action: PayloadAction<{ habitId: string }>) => {
-    //   const habit = state.habits.find((h) => h.id === action.payload.habitId);
-    //   if (habit) {
-        
-    //   }
-    // },
+    setResetFrequency: (
+      state,
+      action: PayloadAction<{ habitId: string; resetFrequency: ResetFrequency }>
+    ) => {
+      const habit = state.habits.find((h) => h.id === action.payload.habitId);
+      if (habit) {
+        habit.resetFrequency = action.payload.resetFrequency;
+        habit.lastResetDate = new Date().toISOString();
+      }
+    },
+
+    resetHabitCounter: (state, action: PayloadAction<{ habitId: string }>) => {
+      const habit = state.habits.find((h) => h.id === action.payload.habitId);
+      if (habit) {
+        habit.positiveCount = 0;
+        habit.negativeCount = 0;
+        habit.lastResetDate = new Date().toISOString();
+      }
+    },
   },
 });
+
+export const checkAndResetHabits = (habits: Habit[]) => {
+  const now = new Date();
+
+  return habits.map((habit) => {
+    if (!habit.resetFrequency || !habit.lastResetDate) return habit;
+
+    const lastResetDate = new Date(habit.lastResetDate);
+    let shouldReset = false;
+
+    switch (habit.resetFrequency) {
+      case "Daily":
+        shouldReset = startOfDay(now) > startOfDay(lastResetDate);
+        break;
+      case "Weekly":
+        shouldReset = now >= addWeeks(lastResetDate, 1);
+        break;
+      case "Monthly":
+        shouldReset = now >= addMonths(lastResetDate, 1);
+        break;
+    }
+
+    if (shouldReset) {
+      return {
+        ...habit,
+        positiveCount: 0,
+        negativeCount: 0,
+        lastResetDate: now.toISOString(),
+      };
+    }
+
+    return habit;
+  });
+};
 
 export const {
   setHabits,
@@ -99,6 +142,8 @@ export const {
   deleteHabit,
   incrementCounter,
   decrementCounter,
+  resetHabitCounter,
+  setResetFrequency,
 } = habitsSlice.actions;
 
 export default habitsSlice.reducer;

@@ -7,6 +7,7 @@ import {
   setHabits,
   deleteHabit,
   Habit,
+  checkAndResetHabits,
 } from "../../features/habitsSlice";
 import HabitItem from "./HabitItem";
 import { db } from "../../util/firebaseConfig";
@@ -22,6 +23,7 @@ import { useAuth } from "../../util/useAuth";
 import Loading from "../Loading";
 import { RootState } from "../../store/store";
 import { Input } from "../ui/input";
+import { addDays } from "date-fns";
 
 const Habits: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -52,11 +54,25 @@ const Habits: React.FC = () => {
           )
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-        dispatch(setHabits(fetchedHabits));
+        // Check and reset habits based on their frequency
+        const updatedHabits = checkAndResetHabits(fetchedHabits);
+        dispatch(setHabits(updatedHabits));
+
+        // Update Firestore with reset habits
+        if (user) {
+          const batch = updatedHabits.map((habit) => {
+            const habitRef = doc(db, "users", user.uid, "habits", habit.id);
+            return updateDoc(habitRef, {
+              positiveCount: habit.positiveCount,
+              negativeCount: habit.negativeCount,
+              lastResetDate: habit.lastResetDate,
+            });
+          });
+          await Promise.all(batch);
+        }
       } catch (error) {
         console.error("Error fetching habits:", error);
       }
-
       setIsLoading(false);
     };
 
@@ -90,6 +106,8 @@ const Habits: React.FC = () => {
         positiveCount: 0,
         negativeCount: 0,
         order: 0,
+        resetFrequency: habits.length > 0 ? habits[0].resetFrequency : "Daily",
+        lastResetDate: addDays(new Date(), -1).toISOString(),
       };
 
       dispatch(addHabit(newHabit));
@@ -101,7 +119,7 @@ const Habits: React.FC = () => {
   const handleReorder = async (newOrder: Habit[]) => {
     // Update local state
     dispatch(setHabits(newOrder));
-  
+
     if (user) {
       try {
         // Update order in Firestore
@@ -109,7 +127,7 @@ const Habits: React.FC = () => {
           const habitRef = doc(db, "users", user.uid, "habits", habit.id);
           return updateDoc(habitRef, { order: index });
         });
-  
+
         await Promise.all(batch);
       } catch (error) {
         console.error("Error updating habit order:", error);
@@ -158,7 +176,6 @@ const Habits: React.FC = () => {
             onReorder={handleReorder}
             className="w-full"
           >
-           
             {habits.map((habit) => (
               <HabitItem
                 key={habit.id}
@@ -166,8 +183,6 @@ const Habits: React.FC = () => {
                 onDelete={() => handleDeleteHabit(habit.id)}
               />
             ))}
-         
-            
           </Reorder.Group>
         )}
       </div>
