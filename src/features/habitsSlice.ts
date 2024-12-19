@@ -38,6 +38,7 @@ const habitsSlice = createSlice({
           positiveCount: 0,
           negativeCount: 0,
           order: 0,
+          lastResetDate: new Date().toISOString(),
         });
       }
 
@@ -55,13 +56,23 @@ const habitsSlice = createSlice({
     },
 
     editHabit: (state, action: PayloadAction<Habit>) => {
-      const { id, title, description, positive, negative } = action.payload;
+      const {
+        id,
+        title,
+        description,
+        positive,
+        negative,
+        lastResetDate,
+        resetFrequency,
+      } = action.payload;
       const habit = state.habits.find((habit) => habit.id === id);
       if (habit) {
         habit.title = title;
         habit.description = description;
         habit.positive = positive;
         habit.negative = negative;
+        habit.resetFrequency = resetFrequency;
+        habit.lastResetDate = lastResetDate;
       }
     },
 
@@ -86,15 +97,6 @@ const habitsSlice = createSlice({
       const habit = state.habits.find((h) => h.id === action.payload.habitId);
       if (habit) {
         habit.resetFrequency = action.payload.resetFrequency;
-        habit.lastResetDate = new Date().toISOString();
-      }
-    },
-
-    resetHabitCounter: (state, action: PayloadAction<{ habitId: string }>) => {
-      const habit = state.habits.find((h) => h.id === action.payload.habitId);
-      if (habit) {
-        habit.positiveCount = 0;
-        habit.negativeCount = 0;
         habit.lastResetDate = new Date().toISOString();
       }
     },
@@ -142,7 +144,6 @@ export const {
   deleteHabit,
   incrementCounter,
   decrementCounter,
-  resetHabitCounter,
   setResetFrequency,
 } = habitsSlice.actions;
 

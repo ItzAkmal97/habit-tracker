@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/store";
 import { useEffect } from "react";
 import { fetchXPLevelData, setXpLevel} from "../features/xpLevelSlice";
+import Quotes from "./Quotes Management/Quotes";
 
 const ProfileHeader: React.FC = () => {
   const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const ProfileHeader: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="flex items-center gap-4 p-4 dark:bg-slate-600 bg-gray-300">
+    <div className="w-full flex items-center gap-4 px-4 py-8 dark:bg-slate-600 bg-gray-300">
       <div className="flex-shrink-0">
         <img
           src={googlePhoto ?? ""}
@@ -50,7 +51,7 @@ const ProfileHeader: React.FC = () => {
       </div>
       <div className="flex-1 text-center">
         <blockquote className="text-gray-400 italic">
-          Motivational Quotes
+          <Quotes />
         </blockquote>
       </div>
     </div>

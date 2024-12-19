@@ -7,7 +7,7 @@ function DashboardPage() {
     <section className="min-h-screen flex flex-col dark:bg-gray-900">
       <DashboardHeader />
       <ProfileHeader />
-      <div className="grid sm:grid-cols-2 max-w-7xl">
+      <div className="grid sm:grid-cols-2 max-w-7xl mt-4">
         <Habits />
         <Rewards />
       </div>

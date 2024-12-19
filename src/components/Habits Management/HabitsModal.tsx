@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { editHabit, deleteHabit, Habit, ResetFrequency } from "../../features/habitsSlice";
+import {
+  editHabit,
+  deleteHabit,
+  Habit,
+  ResetFrequency,
+} from "../../features/habitsSlice";
 import { db } from "../../util/firebaseConfig";
 import { doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "../../util/useAuth";
@@ -44,7 +49,9 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
       : "both"
   );
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [resetFrequency, setResetFrequency] = useState<ResetFrequency | undefined>(habit.resetFrequency);
+  const [resetFrequency, setResetFrequency] = useState<
+    ResetFrequency | undefined
+  >(habit.resetFrequency);
 
   const dispatch = useDispatch();
   const { user } = useAuth();
@@ -79,7 +86,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
 
   const handleResetFrequencyChange = (value: string) => {
     setResetFrequency(value as ResetFrequency);
-  }
+  };
 
   const handleSave = async () => {
     if (user) {
@@ -87,6 +94,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
       const habitRef = doc(db, "users", user.uid, "habits", habit.id);
       const isPositive = habitType === "positive" || habitType === "both";
       const isNegative = habitType === "negative" || habitType === "both";
+      const isLastResetDate = new Date().toISOString();
 
       await updateDoc(habitRef, {
         title,
@@ -94,6 +102,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
         positive: isPositive,
         negative: isNegative,
         resetFrequency: resetFrequency,
+        lastResetDate: isLastResetDate,
       });
 
       dispatch(
@@ -104,6 +113,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
           positive: isPositive,
           negative: isNegative,
           resetFrequency: resetFrequency,
+          lastResetDate: isLastResetDate,
         })
       );
 
@@ -113,7 +123,11 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={onClose}
+      aria-describedby="dialog-description"
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader className="flex flex-row items-center mt-4">
           <DialogTitle className="dark:text-gray-200">Edit Habit</DialogTitle>
@@ -181,7 +195,10 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
             >
               Reset
             </label>
-            <Select value={resetFrequency} onValueChange={handleResetFrequencyChange}>
+            <Select
+              value={resetFrequency}
+              onValueChange={handleResetFrequencyChange}
+            >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select reset frequency" />
               </SelectTrigger>

@@ -37,65 +37,53 @@ const RewardItem: React.FC<RewardItemProps> = ({ onDelete, reward }) => {
   };
 
   return (
-    <>
     <ToastProvider>
       <Reorder.Item value={reward} id={reward.id} className="list-none">
-        <div
-          className="p-3 bg-white dark:bg-gray-700 mb-2 
-          transition-all duration-200 
-          cursor-grab
-          active:cursor-grabbing
-        "
-        >
+        <div className="flex flex-col p-4 bg-white dark:bg-gray-700 mb-2 rounded-lg shadow-sm transition-all duration-200 cursor-grab active:cursor-grabbing hover:shadow-md">
           <div className="flex-grow">
-            <div className="flex justify-between items-center">
-              <div className="flex flex-col">
+            <div className="flex items-start justify-between">
+              <div className="flex-grow">
                 <h3 className="text-lg font-semibold text-black dark:text-white">
                   {reward.title}
                 </h3>
                 {reward.notes && (
-                  <span
-                    className="
-                  text-gray-600 dark:text-gray-300 text-sm mt-1 
-                  break-all whitespace-normal block w-full
-                "
-                  >
+                  <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 break-words">
                     {reward.notes}
-                  </span>
+                  </p>
                 )}
               </div>
 
-              <div className="flex items-center">
+              <div className="flex items-start gap-2 ml-4">
                 <RewardsDropdownMenu reward={reward} onDelete={onDelete} />
                 <Button
                   onClick={handleGoldCalc}
                   variant="default"
-                  className="dark:bg-gray-600 dark:hover:bg-slate-500 h-full bg-gray-200 hover:bg-gray-300"
+                  className="relative group px-3 py-2 h-auto bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 border border-amber-200 dark:border-amber-700"
                 >
-                  <div className="flex flex-col items-center justify-center gap-2">
+                  <div className="flex flex-col items-center justify-center gap-1">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 200 200"
-                      width="40"
-                      height="40"
+                      width="32"
+                      height="32"
+                      className="transition-transform group-hover:scale-110"
                     >
                       <circle
                         cx="100"
                         cy="100"
                         r="90"
-                        fill="gold"
-                        stroke="darkgoldenrod"
+                        fill="#FFD700"
+                        stroke="#B8860B"
                         strokeWidth="10"
                       />
-
                       <polygon
                         points="100,30 120,80 175,80 130,115 150,170 100,140 50,170 70,115 25,80 80,80"
-                        fill="orange"
-                        stroke="darkorange"
+                        fill="#FFA500"
+                        stroke="#FF8C00"
                         strokeWidth="5"
                       />
                     </svg>
-                    <span className="text-gray-600 dark:text-gray-300 font-medium break-all whitespace-normal block">
+                    <span className="text-amber-700 dark:text-amber-300 font-medium text-sm">
                       {reward.cost}
                     </span>
                   </div>
@@ -115,8 +103,7 @@ const RewardItem: React.FC<RewardItemProps> = ({ onDelete, reward }) => {
         </Toast>
       )}
       <ToastViewport />
-      </ToastProvider>
-    </>
+    </ToastProvider>
   );
 };
 

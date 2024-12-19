@@ -106,7 +106,7 @@ const Habits: React.FC = () => {
         positiveCount: 0,
         negativeCount: 0,
         order: 0,
-        resetFrequency: habits.length > 0 ? habits[0].resetFrequency : "Daily",
+        resetFrequency: "Daily",
         lastResetDate: addDays(new Date(), -1).toISOString(),
       };
 
@@ -151,24 +151,31 @@ const Habits: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 m-4">
-      <h1 className="text-start text-2xl text-black dark:text-white">Habits</h1>
-      <div className="flex flex-col gap-2 items-start bg-gray-200 dark:bg-gray-800 p-2 rounded-sm">
-        <div className="w-full rounded flex gap-2">
+    <div className="flex flex-col  mx-4 my-2">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold text-black dark:text-white">
+          Habits
+        </h1>
+      </div>
+
+      <div className="flex flex-col gap-4 bg-gray-200 dark:bg-gray-800/50 rounded-lg p-4 min-h-[calc(70vh-theme(space.16))]">
+        <div className="flex gap-2 bg-gray-100/50 dark:bg-gray-800/50 backdrop-blur-sm p-2 rounded-lg shadow-sm">
           <Input
             placeholder="Add a Habit"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleAddHabit()}
-            className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+            className="dark:bg-gray-700 dark:text-white dark:border-gray-600 focus-visible:ring-2 focus-visible:ring-purple-500 dark:focus-visible:ring-purple-400"
           />
         </div>
 
         {isLoading ? (
-          <Loading
-            isLoading={isLoading}
-            cssClassName="w-full bg-white dark:bg-gray-900 p-10"
-          />
+          <div className="flex items-center justify-center">
+            <Loading
+              isLoading={isLoading}
+              cssClassName="w-full bg-white dark:bg-gray-900 p-10 rounded-lg"
+            />
+          </div>
         ) : (
           <Reorder.Group
             axis="y"
@@ -183,6 +190,17 @@ const Habits: React.FC = () => {
                 onDelete={() => handleDeleteHabit(habit.id)}
               />
             ))}
+            {habits.length === 0 && (
+              <div className="flex items-center justify-center h-[200px] text-gray-500 dark:text-gray-400">
+                <div className="flex flex-col items-center gap-2 text-gray-500">
+                  <p className="font-bold">These are your Habits</p>
+                  <span className="text-sm text-center font-semibold">
+                    Habits don't have a rigid schedule. You can check them off
+                    multiple times per day.
+                  </span>
+                </div>
+              </div>
+            )}
           </Reorder.Group>
         )}
       </div>
