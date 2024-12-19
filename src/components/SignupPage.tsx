@@ -111,7 +111,7 @@ const SignupPage: React.FC = () => {
 
         dispatch(setIsLoggedIn(true));
         localStorage.setItem("isLoggedIn", "true");
-        navigate("/dashboard");
+        setTimeout(() => navigate("/dashboard"), 0);
       }
     } catch (error: unknown) {
       console.error(error instanceof FirebaseError, error);

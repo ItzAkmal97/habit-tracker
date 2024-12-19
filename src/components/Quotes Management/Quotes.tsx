@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Loader2, RefreshCw } from "lucide-react";
+import { Loader2, RefreshCw, Quote as QuoteIcon } from "lucide-react";
 
 interface Quote {
   id: string;
@@ -44,44 +44,49 @@ const Quotes: React.FC = () => {
 
   if (error) {
     return (
-      <Alert variant="destructive" className="max-w-2xl mx-auto">
+      <Alert variant="destructive" className="max-w-2xl mx-auto mt-4">
         <AlertDescription>{error}</AlertDescription>
       </Alert>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4 max-w-2xl mx-auto p-4">
-      <div className="flex justify-end">
-        <Button
-          onClick={fetchQuotes}
-          disabled={isLoading}
-          variant="outline"
-          className="flex items-center gap-2 dark:bg-gray-900 bg-gray-600 text-white"
-        >
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <RefreshCw className="h-4 w-4" />
-          )}
-          New Quote
-        </Button>
-      </div>
+    <div className="w-full p-4 md:p-8 bg-gray-300 dark:bg-slate-600">
+      <div className="max-w-2xl mx-auto">
+        <div className="flex justify-end mb-4">
+          <Button
+            onClick={fetchQuotes}
+            disabled={isLoading}
+            variant="outline"
+            className="flex items-center gap-2 bg-gray-600 hover:bg-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800 text-white transition-colors"
+          >
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <RefreshCw className="h-4 w-4" />
+            )}
+            New Quote
+          </Button>
+        </div>
 
-      {quote && (
-        <Card key={quote.id}>
-          <CardContent className="pt-6 dark:bg-gray-800">
-            <blockquote className="space-y-2">
-              <p className="text-lg text-gray-700 dark:text-white">
-                "{quote.quote}"
-              </p>
-              <footer className="text-sm text-gray-500 dark:text-gray-300">
-                — {quote.author}
-              </footer>
-            </blockquote>
-          </CardContent>
-        </Card>
-      )}
+        {quote && (
+          <Card className="border-0 shadow-lg">
+            <CardContent className="pt-6 bg-white dark:bg-gray-800">
+              <blockquote className="space-y-4">
+                <div className="flex gap-2">
+                  <QuoteIcon className="h-6 w-6 text-gray-400 flex-shrink-0" />
+                  <p className="text-lg text-gray-700 dark:text-white leading-relaxed">
+                    {quote.quote}
+                  </p>
+                </div>
+                <footer className="text-sm text-gray-500 dark:text-gray-300 font-medium pl-8">
+                  — {quote.author}
+                </footer>
+              </blockquote>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 };

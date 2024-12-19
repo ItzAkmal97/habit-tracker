@@ -12,7 +12,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
 import { FirebaseError } from "firebase/app";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, } from "lucide-react";
 import {
   setShowPassword,
   setShowToast,
@@ -23,7 +23,7 @@ import { RootState } from "../store/store";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { setIsLoggedIn } from "../features/authenticationSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -35,7 +35,7 @@ import {
   ToastDescription,
   ToastClose,
 } from "./ui/toast";
-
+import { Loader2 } from "lucide-react";
 type LoginData = {
   email: string;
   password: string;
@@ -46,8 +46,11 @@ function LoginPage() {
     (state: RootState) => state.loginSignup
   );
 
-  const dispatch = useDispatch();
+  const [isLoginLoading, setIsLoginLoading] = useState<boolean>(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
 
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -81,6 +84,7 @@ function LoginPage() {
 
   const handleGoogleAuth = async () => {
     try {
+      setIsGoogleLoading(true);
       const userGoogleAuth = await signInWithPopup(
         auth,
         new GoogleAuthProvider()
@@ -97,6 +101,7 @@ function LoginPage() {
           localStorage.setItem("photoURL", photoURL);
         }
 
+        setIsGoogleLoading(false);
         dispatch(setIsLoggedIn(true));
         localStorage.setItem("isLoggedIn", "true");
         navigate("/dashboard");
@@ -120,6 +125,7 @@ function LoginPage() {
 
   const onSubmit = async (data: LoginData) => {
     try {
+      setIsLoginLoading(true);
       const userCredentials = await signInWithEmailAndPassword(
         auth,
         data.email,
@@ -138,9 +144,8 @@ function LoginPage() {
           localStorage.setItem("email", userData.email);
         }
         const localLoggedin = dispatch(setIsLoggedIn(true));
-
-        
         localStorage.setItem("isLoggedIn", JSON.stringify(localLoggedin));
+        setIsLoginLoading(false);
         navigate("/dashboard");
       } else {
         console.log("No User Document Found");
@@ -168,104 +173,121 @@ function LoginPage() {
 
   return (
     <ToastProvider>
-      <div className="bg-white dark:bg-gray-900 h-screen text-black dark:text-white pt-32">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-col items-center justify-center">
-            <div className="w-full max-w-xl">
-              <h1 className="text-center text-3xl md:text-4xl mb-12 dark:text-white">
-                Log In
-              </h1>
-
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="flex flex-col gap-6">
-                  <Toast
-                    open={showToast}
-                    onOpenChange={() => dispatch(setShowToast(false))}
-                    variant={toastColor as "default" | "destructive"}
-                  >
-                    <div className="grid gap-1">
-                      <ToastTitle className="dark:text-white">
-                        Login Error
-                      </ToastTitle>
-                      <ToastDescription className="dark:text-gray-300">
-                        {toastMessage}
-                      </ToastDescription>
-                    </div>
-                    <ToastClose />
-                  </Toast>
-
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="lg"
-                    onClick={handleGoogleAuth}
-                    className="dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
-                  >
-                    <Mail size={20} />
-                    Log in with Google
-                  </Button>
-
-                  <div className="flex items-center gap-4">
-                    <div className="h-px bg-black dark:bg-gray-600 flex-1"></div>
-                    <span className="text-black dark:text-white font-medium">
-                      OR
-                    </span>
-                    <div className="h-px bg-black dark:bg-gray-600 flex-1"></div>
-                  </div>
-
-                  <Input
-                    type="email"
-                    placeholder="Email"
-                    className="dark:bg-gray-800 dark:text-white dark:border-gray-700"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 font-bold">
-                      {errors.email.message}
-                    </p>
-                  )}
-
-                  <div className="relative">
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      placeholder="Password"
-                      className="dark:bg-gray-800 dark:text-white dark:border-gray-700"
-                      {...register("password")}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => dispatch(setShowPassword(!showPassword))}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-black hover:text-white dark:text-gray-400 dark:hover:text-white"
-                    >
-                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                    </button>
-                  </div>
-                  {errors.password && (
-                    <p className="text-red-500 font-bold">
-                      {errors.password.message}
-                    </p>
-                  )}
-
-                  <Button
-                    type="submit"
-                    variant="default"
-                    size="lg"
-                    className="dark:bg-white dark:text-black dark:hover:bg-gray-200"
-                  >
-                    Log In
-                  </Button>
-
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="dark:text-white dark:hover:text-gray-300"
-                  >
-                    <Link to="/">Don't have an account? Sign up</Link>
-                  </Button>
-                </div>
-              </form>
-            </div>
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+              Log In
+            </h1>
           </div>
+
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <Toast
+              open={showToast}
+              onOpenChange={() => dispatch(setShowToast(false))}
+              variant={toastColor as "default" | "destructive"}
+            >
+              <div className="grid gap-1">
+                <ToastTitle className="text-gray-900 dark:text-white">
+                  Login Error
+                </ToastTitle>
+                <ToastDescription className="text-gray-500 dark:text-gray-300">
+                  {toastMessage}
+                </ToastDescription>
+              </div>
+              <ToastClose />
+            </Toast>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              onClick={handleGoogleAuth}
+              className="w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
+              disabled={isGoogleLoading && isLoginLoading}
+            >
+              <Mail className="mr-2 h-5 w-5" />
+              <span>Log in with Google</span>
+            </Button>
+
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300 dark:border-gray-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white dark:bg-gray-900 text-gray-500">
+                  OR
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <Input
+                  type="email"
+                  placeholder="Email"
+                  className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white"
+                  {...register("email")}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white"
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => dispatch(setShowPassword(!showPassword))}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </button>
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-500">
+                    {errors.password.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              variant="default"
+              size="lg"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              disabled={isLoginLoading}
+            >
+              {isLoginLoading ? (
+                <div className="flex items-center justify-center">
+                  <span className="mr-2">Logging in</span>
+                  <Loader2 className="animate-spin" />
+                </div>
+              ) : (
+                "Log In"
+              )}
+            </Button>
+
+            <div className="text-center">
+              <Link
+                to="/"
+                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              >
+                Don't have an account? Sign up
+              </Link>
+            </div>
+          </form>
         </div>
       </div>
       <ToastViewport />

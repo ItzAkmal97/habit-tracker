@@ -76,6 +76,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
     setIsSubmitting(false);
     onClose();
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -88,7 +89,7 @@ const RewardsModal: React.FC<RewardsModalProps> = ({
             <Button
               variant="default"
               onClick={handleSave}
-              disabled={isSubmitting}
+              disabled={isSubmitting || title.trim() === "" || cost === 0}
             >
               {isSubmitting ? "Saving..." : "Save"}
             </Button>

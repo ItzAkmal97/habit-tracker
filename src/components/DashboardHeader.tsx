@@ -12,6 +12,7 @@ import ModeToggle from "./themes/ModeToggle";
 import GameGold from "./ui/GameGold";
 import { RootState } from "../store/store";
 import { getTotalGold, setTotalGold } from "@/features/rewardSlice";
+// import { User } from "lucide-react";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
@@ -38,7 +39,6 @@ const DashboardHeader: React.FC = () => {
   useEffect(() => {
     const fetchTotalGold = async () => {
       try {
-        
         const gold = await getTotalGold(); // Fetch totalGold
         if (gold !== null) dispatch(setTotalGold(gold));
       } catch (error) {
@@ -48,7 +48,7 @@ const DashboardHeader: React.FC = () => {
     };
 
     fetchTotalGold();
-  }, [dispatch]);
+  }, [dispatch, totalGold]);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);

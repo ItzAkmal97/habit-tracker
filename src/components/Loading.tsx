@@ -12,7 +12,7 @@ const Loading: React.FC<LoadingProps> = ({ isLoading, cssClassName }) => {
   return (
     <div className={`flex justify-center items-center ${cssClassName}`}>
       <ClipLoader
-        color="gold"
+        color="dark:gray-800"
         className="font-bold"
         cssOverride={{
           borderWidth: "4px",

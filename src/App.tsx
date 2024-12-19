@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
-// import { useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Signup from "./pages/Signup";
 import RootLayout from "./pages/RootLayout";
 import Error from "./pages/Error";
@@ -9,23 +9,23 @@ import ProtectedRoute from "./pages/ProtectedRoute";
 import Loading from "./components/Loading";
 import { useAuth } from "./util/useAuth";
 import { ThemeProvider } from "./components/themes/theme-provider";
+import { selectIsLoggedIn } from "./features/authenticationSlice";
 
 function App() {
 
 
-  const isLocalLoggedIn = localStorage.getItem("isLoggedIn");
-
+  const isLoggedIn = useSelector(selectIsLoggedIn);
   const {isLoading} = useAuth();
 
   const router = createBrowserRouter([
     {
       path: "/",
       element: <RootLayout />,
-      errorElement: <Error isLoggedIn={isLocalLoggedIn? true : false} />,
+      errorElement: <Error isLoggedIn={isLoggedIn? true : false} />,
       children: [
         {
           path: "/",
-          element: isLocalLoggedIn ? (
+          element: isLoggedIn ? (
             <Navigate to="/dashboard" replace />
           ) : (
             <Signup />
@@ -38,7 +38,7 @@ function App() {
         {
           path: "/dashboard",
           element: (
-            <ProtectedRoute isLoggedIn={isLocalLoggedIn? true : false}>
+            <ProtectedRoute isLoggedIn={isLoggedIn? true : false}>
               <DashboardPage />
             </ProtectedRoute>
           ),
