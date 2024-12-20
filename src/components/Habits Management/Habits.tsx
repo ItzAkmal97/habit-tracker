@@ -23,7 +23,6 @@ import { useAuth } from "../../util/useAuth";
 import Loading from "../Loading";
 import { RootState } from "../../store/store";
 import { Input } from "../ui/input";
-import { addDays } from "date-fns";
 
 const Habits: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -50,6 +49,8 @@ const Habits: React.FC = () => {
               ({
                 id: doc.id,
                 ...doc.data(),
+                resetFrequency: doc.data().resetFrequency || "Daily",
+                lastResetDate: doc.data().lastResetDate || new Date().toISOString(),
               } as Habit)
           )
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -60,12 +61,14 @@ const Habits: React.FC = () => {
 
         // Update Firestore with reset habits
         if (user) {
-          const batch = updatedHabits.map((habit) => {
+          const batch = updatedHabits.map((habit, index) => {
             const habitRef = doc(db, "users", user.uid, "habits", habit.id);
             return updateDoc(habitRef, {
               positiveCount: habit.positiveCount,
               negativeCount: habit.negativeCount,
               lastResetDate: habit.lastResetDate,
+              resetFrequency: habit.resetFrequency,
+              order: index,
             });
           });
           await Promise.all(batch);
@@ -107,7 +110,7 @@ const Habits: React.FC = () => {
         negativeCount: 0,
         order: 0,
         resetFrequency: "Daily",
-        lastResetDate: addDays(new Date(), -1).toISOString(),
+        lastResetDate: new Date().toISOString(),
       };
 
       dispatch(addHabit(newHabit));
