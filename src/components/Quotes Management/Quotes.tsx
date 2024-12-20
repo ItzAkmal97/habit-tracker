@@ -3,12 +3,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw, Quote as QuoteIcon } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface Quote {
   id: string;
   quote: string;
   author: string;
 }
+
+const INTERVAL_TIME = 100000;
 
 const Quotes: React.FC = () => {
   const [quote, setQuote] = useState<Quote | null>(null);
@@ -21,11 +24,7 @@ const Quotes: React.FC = () => {
 
     try {
       const response = await fetch("https://dummyjson.com/quotes/random");
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch quotes");
-      }
-
+      if (!response.ok) throw new Error("Failed to fetch quotes");
       const resData = await response.json();
       setQuote(resData);
     } catch (error) {
@@ -37,8 +36,7 @@ const Quotes: React.FC = () => {
 
   useEffect(() => {
     fetchQuotes();
-    const interval = setInterval(fetchQuotes, 100000);
-
+    const interval = setInterval(fetchQuotes, INTERVAL_TIME);
     return () => clearInterval(interval);
   }, []);
 
@@ -51,7 +49,7 @@ const Quotes: React.FC = () => {
   }
 
   return (
-    <div className="w-full p-4 md:p-8 bg-gray-300 dark:bg-slate-600">
+    <div className="max-w-[calc(60vh-theme(space.16))] lg:max-w-[calc(90vh-theme(space.16))] p-4 md:p-8 bg-gray-300 dark:bg-slate-600">
       <div className="max-w-2xl mx-auto">
         <div className="flex justify-end mb-4">
           <Button
@@ -70,8 +68,8 @@ const Quotes: React.FC = () => {
         </div>
 
         {quote && (
-          <Card className="border-0 shadow-lg">
-            <CardContent className="pt-6 bg-white dark:bg-gray-800">
+          <Card className="border-0 shadow-2xl">
+            <CardContent className="pt-6 bg-white dark:bg-gray-800 relative">
               <blockquote className="space-y-4">
                 <div className="flex gap-2">
                   <QuoteIcon className="h-6 w-6 text-gray-400 flex-shrink-0" />
@@ -84,6 +82,13 @@ const Quotes: React.FC = () => {
                 </footer>
               </blockquote>
             </CardContent>
+            <motion.div
+              className=" h-1 bg-black dark:bg-gray-500 rounded-t-lg"
+              initial={{ width: "100%" }}
+              animate={{ width: "0%" }}
+              transition={{ duration: INTERVAL_TIME / 1000, ease: "linear" }}
+              key={quote.id}
+            />
           </Card>
         )}
       </div>

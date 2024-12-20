@@ -72,11 +72,9 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
     if (!user) return;
 
     try {
-      // Delete from Firestore
       const habitRef = doc(db, "users", user.uid, "habits", habitId);
       await deleteDoc(habitRef);
 
-      // Remove from Redux store
       dispatch(deleteHabit(habitId));
       onClose();
     } catch (error) {
@@ -138,7 +136,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
             <Button
               variant="default"
               onClick={handleSave}
-              disabled={isSubmitting}
+              disabled={isSubmitting || title.trim() === ""}
             >
               {isSubmitting ? "Saving..." : "Save"}
             </Button>
@@ -147,7 +145,7 @@ const HabitsModal: React.FC<HabitsModalProps> = ({
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <label htmlFor="title" className="text-right dark:text-gray-300">
-              Title
+              Title*
             </label>
             <Input
               id="title"

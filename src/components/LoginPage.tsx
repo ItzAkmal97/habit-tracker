@@ -12,7 +12,7 @@ import {
 } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
 import { FirebaseError } from "firebase/app";
-import { Eye, EyeOff, } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import {
   setShowPassword,
   setShowToast,
@@ -48,7 +48,6 @@ function LoginPage() {
 
   const [isLoginLoading, setIsLoginLoading] = useState<boolean>(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
-
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -150,7 +149,6 @@ function LoginPage() {
       } else {
         console.log("No User Document Found");
       }
-
     } catch (error: unknown) {
       console.error(typeof error, error);
 
@@ -173,7 +171,7 @@ function LoginPage() {
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center px-4 py-12">
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -203,8 +201,8 @@ function LoginPage() {
               variant="outline"
               size="lg"
               onClick={handleGoogleAuth}
-              className="w-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
-              disabled={isGoogleLoading && isLoginLoading}
+              className="w-full border dark:border-gray-700 dark:text-white dark:hover:bg-gray-800"
+              disabled={isGoogleLoading || isLoginLoading}
             >
               <Mail className="mr-2 h-5 w-5" />
               <span>Log in with Google</span>
@@ -266,13 +264,13 @@ function LoginPage() {
               type="submit"
               variant="default"
               size="lg"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white dark:bg-white dark:text-black dark:hover:bg-gray-200"
-              disabled={isLoginLoading}
+              className="w-full dark:bg-white dark:text-black dark:hover:bg-gray-200"
+              disabled={isLoginLoading || isGoogleLoading}
             >
               {isLoginLoading ? (
                 <div className="flex items-center justify-center">
-                  <span className="mr-2">Logging in</span>
                   <Loader2 className="animate-spin" />
+                  <span className="ml-1">Logging in</span>
                 </div>
               ) : (
                 "Log In"
@@ -280,12 +278,13 @@ function LoginPage() {
             </Button>
 
             <div className="text-center">
-              <Link
-                to="/"
-                className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+              <Button
+                variant="link"
+                size="sm"
+                disabled={isLoginLoading || isGoogleLoading}
               >
-                Don't have an account? Sign up
-              </Link>
+                <Link to="/">Don't have an account? Sign up</Link>
+              </Button>
             </div>
           </form>
         </div>

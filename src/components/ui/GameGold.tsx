@@ -3,7 +3,7 @@ interface GoldProps {
 }
 const GameGold: React.FC<GoldProps> = ({gold}) => {
   return (
-    <div className="flex items-center gap-1">
+    <div className={`flex items-center gap-1`}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 200 200"

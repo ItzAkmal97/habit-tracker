@@ -6,13 +6,12 @@ import { MessageSquareMore } from "lucide-react";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
-import avatarImg from "../assets/avatar.png";
 import Modal from "./Modal";
 import ModeToggle from "./themes/ModeToggle";
 import GameGold from "./ui/GameGold";
 import { RootState } from "../store/store";
 import { getTotalGold, setTotalGold } from "@/features/rewardSlice";
-// import { User } from "lucide-react";
+import { User } from "lucide-react";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
@@ -39,7 +38,7 @@ const DashboardHeader: React.FC = () => {
   useEffect(() => {
     const fetchTotalGold = async () => {
       try {
-        const gold = await getTotalGold(); // Fetch totalGold
+        const gold = await getTotalGold();
         if (gold !== null) dispatch(setTotalGold(gold));
       } catch (error) {
         console.error("Error fetching total gold:", error);
@@ -67,6 +66,7 @@ const DashboardHeader: React.FC = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("email");
     localStorage.removeItem("photoURL");
+    // localStorage.removeItem("vite-ui-theme");
     dispatch(setIsLoggedIn(false));
     navigate("/login", { replace: true });
   };
@@ -77,14 +77,15 @@ const DashboardHeader: React.FC = () => {
 
   return (
     <header className="flex justify-between items-center px-6 dark:bg-slate-800 border-b py-2">
-      <img src={img} alt="Habit" className="w-48" />
-      <div className="flex gap-6 items-center flex-row-reverse">
+      <img src={img} alt="Habit" className="w-36 md:w-48" />
+      <div className="flex gap-4 items-center flex-row-reverse w-40 md:w-96">
         <ModeToggle />
         <button
           className="cursor-pointer focus:outline-none"
           onClick={handleDropdownToggle}
         >
-          {googlePhoto ? (
+          <User className="md:w-8 h-8" />
+          {/* {googlePhoto ? (
             <img
               src={googlePhoto ?? avatarImg}
               alt="Avatar"
@@ -96,10 +97,10 @@ const DashboardHeader: React.FC = () => {
               alt="Avatar"
               className="w-12 h-12 rounded-full object-contain"
             />
-          )}
+          )} */}
         </button>
         <button>
-          <MessageSquareMore className="w-8 h-8" />
+          <MessageSquareMore className="md:w-8 h-8" />
         </button>
         <GameGold gold={totalGold.toFixed(2)} />
 
