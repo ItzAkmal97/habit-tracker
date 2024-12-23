@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import DashboardPage from "./components/DashboardPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Loading from "./components/Loading";
+import PaymentPage from "./pages/PaymentPage";
 import { useAuth } from "./util/useAuth";
 import { ThemeProvider } from "./components/themes/theme-provider";
 import { selectIsLoggedIn } from "./features/authenticationSlice";
@@ -43,6 +44,14 @@ function App() {
             </ProtectedRoute>
           ),
         },
+        {
+          path: "/payment",
+          element: (
+            <ProtectedRoute isLoggedIn={isLoggedIn? true : false}>
+              <PaymentPage />
+            </ProtectedRoute>
+          )
+        }
       ],
     },
   ]);

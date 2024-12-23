@@ -36,6 +36,7 @@ export const getTotalGold = async (): Promise<number | null> => {
   }
 };
 
+
 export interface Reward {
   id: string;
   title: string;

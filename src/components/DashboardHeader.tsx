@@ -12,6 +12,8 @@ import GameGold from "./ui/GameGold";
 import { RootState } from "../store/store";
 import { getTotalGold, setTotalGold } from "@/features/rewardSlice";
 import { User } from "lucide-react";
+import { Button } from "./ui/button";
+import { Link } from "react-router-dom";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
@@ -19,6 +21,7 @@ const DashboardHeader: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { totalGold } = useSelector((state: RootState) => state.reward);
+  const {isEnabled} = useSelector((state: RootState) => state.darkMod);
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -43,7 +46,6 @@ const DashboardHeader: React.FC = () => {
       } catch (error) {
         console.error("Error fetching total gold:", error);
       }
-
     };
 
     fetchTotalGold();
@@ -56,6 +58,7 @@ const DashboardHeader: React.FC = () => {
     };
   }, []);
 
+
   const handleLogout = () => {
     signOut(auth)
       .then(() => {})
@@ -66,7 +69,8 @@ const DashboardHeader: React.FC = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("email");
     localStorage.removeItem("photoURL");
-    // localStorage.removeItem("vite-ui-theme");
+    localStorage.removeItem('vite-ui-theme');
+    localStorage.removeItem("darkModeAccess");
     dispatch(setIsLoggedIn(false));
     navigate("/login", { replace: true });
   };
@@ -103,6 +107,11 @@ const DashboardHeader: React.FC = () => {
           <MessageSquareMore className="md:w-8 h-8" />
         </button>
         <GameGold gold={totalGold.toFixed(2)} />
+        <Link to="/payment">
+          {!isEnabled && <Button variant="destructive" className="">
+            Upgrade to Premium
+          </Button>}
+        </Link>
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (

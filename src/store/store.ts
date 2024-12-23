@@ -5,6 +5,7 @@ import firebaseDbStateSliceReducer from "../features/firebaseDbSlice";
 import habitsSliceReducer from "../features/habitsSlice";
 import rewardSliceReducer from '../features/rewardSlice'
 import xpLevelSliceReducer from '../features/xpLevelSlice';
+import darkModeSliceReducer from '../features/darkModeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
     firebaseDb: firebaseDbStateSliceReducer,
     habits: habitsSliceReducer,
     reward: rewardSliceReducer,
-    xpLevel: xpLevelSliceReducer
+    xpLevel: xpLevelSliceReducer,
+    darkMod: darkModeSliceReducer,
   },
 });
 
