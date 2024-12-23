@@ -57,21 +57,22 @@ const DashboardHeader: React.FC = () => {
     };
   }, []);
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {})
-      .catch((error) => {
-        console.error(error);
-      });
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("username");
-    localStorage.removeItem("email");
-    localStorage.removeItem("photoURL");
-    localStorage.removeItem("vite-ui-theme");
-    localStorage.removeItem("darkModeAccess");
-    dispatch(setIsLoggedIn(false));
-    navigate("/login", { replace: true });
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("username");
+      localStorage.removeItem("email");
+      localStorage.removeItem("photoURL");
+      localStorage.removeItem("vite-ui-theme");
+      localStorage.removeItem("darkModeAccess");
+      dispatch(setIsLoggedIn(false));
+      navigate("/login", { replace: true });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
   };
+  
 
   const googlePhoto = localStorage.getItem("photoURL");
   const username = localStorage.getItem("username");
