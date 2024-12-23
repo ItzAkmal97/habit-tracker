@@ -94,7 +94,7 @@ const Payment: React.FC = () => {
         setTimeout(() => {
           dispatch(setShowToast(false));
           navigate("/dashboard");
-        }, 5000);
+        }, 3000);
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -105,7 +105,7 @@ const Payment: React.FC = () => {
 
       setTimeout(() => {
         dispatch(setShowToast(false));
-      }, 4000);
+      }, 3000);
     } finally {
       setLoading(false);
     }
@@ -189,7 +189,6 @@ const Payment: React.FC = () => {
             </Button>
           </CardFooter>
         </Card>
-
         <ToastViewport />
       </div>
     </ToastProvider>

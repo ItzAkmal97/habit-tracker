@@ -12,7 +12,6 @@ import GameGold from "./ui/GameGold";
 import { RootState } from "../store/store";
 import { getTotalGold, setTotalGold } from "@/features/rewardSlice";
 import { User } from "lucide-react";
-import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -21,8 +20,8 @@ const DashboardHeader: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { totalGold } = useSelector((state: RootState) => state.reward);
-  const {isEnabled} = useSelector((state: RootState) => state.darkMod);
 
+  const darkModeAccess = localStorage.getItem("darkModeAccess") === "true";
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleDropdownToggle = () => {
@@ -58,7 +57,6 @@ const DashboardHeader: React.FC = () => {
     };
   }, []);
 
-
   const handleLogout = () => {
     signOut(auth)
       .then(() => {})
@@ -69,7 +67,7 @@ const DashboardHeader: React.FC = () => {
     localStorage.removeItem("username");
     localStorage.removeItem("email");
     localStorage.removeItem("photoURL");
-    localStorage.removeItem('vite-ui-theme');
+    localStorage.removeItem("vite-ui-theme");
     localStorage.removeItem("darkModeAccess");
     dispatch(setIsLoggedIn(false));
     navigate("/login", { replace: true });
@@ -89,29 +87,11 @@ const DashboardHeader: React.FC = () => {
           onClick={handleDropdownToggle}
         >
           <User className="md:w-8 h-8" />
-          {/* {googlePhoto ? (
-            <img
-              src={googlePhoto ?? avatarImg}
-              alt="Avatar"
-              className="w-12 h-12 rounded-full object-contain"
-            />
-          ) : (
-            <img
-              src={avatarImg}
-              alt="Avatar"
-              className="w-12 h-12 rounded-full object-contain"
-            />
-          )} */}
         </button>
         <button>
           <MessageSquareMore className="md:w-8 h-8" />
         </button>
         <GameGold gold={totalGold.toFixed(2)} />
-        <Link to="/payment">
-          {!isEnabled && <Button variant="destructive" className="">
-            Upgrade to Premium
-          </Button>}
-        </Link>
 
         {/* Dropdown Menu */}
         {isDropdownOpen && (
@@ -136,6 +116,17 @@ const DashboardHeader: React.FC = () => {
               >
                 Logout
               </li>
+
+              {!darkModeAccess && (
+                <>
+                  <hr className="border-2 dark:border-gray-900" />
+                  <li className="px-4 py-2 dark:hover:bg-gray-600 hover:bg-gray-100">
+                    <Link to="/payment">
+                      <button>Upgrade to Premium</button>
+                    </Link>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
         )}
