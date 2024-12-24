@@ -6,6 +6,7 @@ import habitsSliceReducer from "../features/habitsSlice";
 import rewardSliceReducer from '../features/rewardSlice'
 import xpLevelSliceReducer from '../features/xpLevelSlice';
 import darkModeSliceReducer from '../features/darkModeSlice';
+import badgeSliceReducer from '../features/badgeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     reward: rewardSliceReducer,
     xpLevel: xpLevelSliceReducer,
     darkMod: darkModeSliceReducer,
+    badge: badgeSliceReducer,
   },
 });
 

@@ -6,12 +6,14 @@ interface UserState {
   xp: number;
   level: number;
   totalXpForNextLevel: number;
+  totalXp: number;
 }
 
 const initialState: UserState = {
   xp: 0,
   level: 0,
   totalXpForNextLevel: 100,
+  totalXp: 0,
 };
 
 const xpLevelSlice = createSlice({
@@ -22,13 +24,19 @@ const xpLevelSlice = createSlice({
       state.xp = action.payload.xp;
       state.level = action.payload.level;
       state.totalXpForNextLevel = action.payload.totalXpForNextLevel;
+      state.totalXp = action.payload.totalXp;
     },
 
     updateXPAndLevel: (state, action: PayloadAction<{ xpGain: number }>) => {
       const { xpGain } = action.payload;
 
-      state.xp += xpGain;
+      if (typeof xpGain !== "number" || isNaN(xpGain)) {
+        return;
+      }
 
+      state.xp += xpGain;
+      state.totalXp = (state.totalXp || 0) + xpGain;
+      if (state.totalXp < 0) state.totalXp = 0;
       if (state.xp < 0) state.xp = 0;
 
       if (state.xp >= state.totalXpForNextLevel) {
@@ -56,6 +64,7 @@ export const fetchXPLevelData = async () => {
         xp: data.xp || 0,
         level: data.level || 0,
         totalXpForNextLevel: data.totalXpForNextLevel || 100,
+        totalXp: data.totalXp || 0,
       };
     }
 
@@ -78,6 +87,7 @@ export const saveXPLevelData = async (state: UserState) => {
         xp: state.xp,
         level: state.level,
         totalXpForNextLevel: state.totalXpForNextLevel,
+        totalXp: state.totalXp,
       },
       { merge: true }
     );

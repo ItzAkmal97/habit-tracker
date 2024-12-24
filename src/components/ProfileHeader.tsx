@@ -88,7 +88,7 @@ const ProfileHeader: React.FC = () => {
                       width: `${(xp / totalXpForNextLevel) * 100}%`,
                       height: "100%",
                     }}
-                    transition={{ duration: 0.5 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
                     className="h-4 dark:bg-gray-200 rounded-full bg-slate-700"
                   >
                     <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-center ${cssClass}`}>
