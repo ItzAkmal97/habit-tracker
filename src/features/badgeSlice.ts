@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction} from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { BADGESDATA } from '../components/Badges Management/Data';
 
 interface Badge {
     id: string;
@@ -25,21 +26,21 @@ const badgeSlice = createSlice({
         },
 
         addBadge: (state, action: PayloadAction<Badge>) => {
-            if(!state.badges.find(badge => badge.id === action.payload.id)) return;
+            if(state.badges.find(badge => badge.id === action.payload.id)) return;
             state.badges.push(action.payload);
         },
 
         xpBadge: (state, action: PayloadAction<{requiredXp: number}>) => {
             const {requiredXp} = action.payload;
-            const badge = state.badges.find(badge => badge.xpRequired === requiredXp);
-            if(!badge) return;
+            const badge = BADGESDATA.progression.find(badge => badge.xpRequired === requiredXp);
+            if(!badge || state.badges.find(b => b.id === badge.id)) return;
             state.badges.push(badge);
         },
 
         levelBadge: (state, action: PayloadAction<{levelRequired: number}>) => {
             const {levelRequired} = action.payload;
-            const badge = state.badges.find(badge => badge.levelRequired === levelRequired);
-            if(!badge) return;
+            const badge = BADGESDATA.progression.find(badge => badge.levelRequired === levelRequired);
+            if(!badge || state.badges.find(b => b.id === badge.id)) return;
             state.badges.push(badge);
         }
     }
