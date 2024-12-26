@@ -21,13 +21,13 @@ export const BADGESDATA = {
         requirement: 'Accumulate 10,000 XP',
         xpRequired: 10000,
       },
-      {
-        id: 'consistent',
-        name: 'Consistent',
-        icon: '🔥',
-        requirement: '7 day streak',
-        streak: 7,
-      },
+      // {
+      //   id: 'consistent',
+      //   name: 'Consistent',
+      //   icon: '🔥',
+      //   requirement: '7 day streak',
+      //   streak: 7,
+      // },
       {
         id: 'achiever',
         name: 'Achiever',
@@ -83,13 +83,13 @@ export const BADGESDATA = {
       //   icon: '⌛',
       //   requirement: 'Log 100 Positive Habits',
       // },
-      // {
-      //   id: 'habit-king',
-      //   name: 'Habit King',
-      //   icon: '👑',
-      //   requirement: 'Complete all other badges',
+      {
+        id: 'habit-king',
+        name: 'Habit King',
+        icon: '👑',
+        requirement: 'Complete all other badges',
 
-      // },
+      },
       {
         id: 'grandmaster',
         name: 'Grandmaster',

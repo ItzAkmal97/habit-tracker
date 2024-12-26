@@ -1,13 +1,15 @@
 import React from "react";
 import BadgesModal from "./BadgesModal";
-import { motion } from "framer-motion";
 import BADGESDATA from "./Data";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { Progress } from "@/components/ui/progress";
 
 const Badges: React.FC = () => {
+  const { badges } = useSelector((state: RootState) => state.badge);
 
-  const {badges} = useSelector((state: RootState) => state.badge);
+  const progressPercentage =
+    (badges.length / BADGESDATA.progression.length) * 100;
 
   return (
     <div className="flex flex-col mx-4 my-2">
@@ -18,17 +20,12 @@ const Badges: React.FC = () => {
       </div>
       <div className="flex flex-col gap-4 bg-gray-200 dark:bg-gray-800/50 rounded-lg p-4 min-h-[calc(40vh-theme(space.16))]">
         <BadgesModal totalBadges={BADGESDATA.progression} />
-        <div className="dark:bg-gray-900 bg-white">
-          <motion.div
-            initial={{ width: "0%" }}
-            animate={{
-              width: `${(badges.length / BADGESDATA.progression.length) * 100}%`,
-              height: "12px",
-            }}
-            transition={{ duration: "0.5s", ease: "easeInOut" }}
-            className=" dark:bg-gray-200 bg-slate-700 rounded-full"
-          />
-        </div>
+        <Progress
+          value={progressPercentage}
+          className="w-full h-2"
+          currentValue={badges.length}
+          maxValue={BADGESDATA.progression.length}
+        />
       </div>
     </div>
   );

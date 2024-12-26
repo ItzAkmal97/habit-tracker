@@ -68,8 +68,6 @@ function LoginPage() {
     };
   }, [dispatch, navigate]);
 
-
-
   const schema = yup.object().shape({
     email: yup.string().email().required("Email is required"),
     password: yup.string().required("Password is required"),
@@ -109,7 +107,7 @@ function LoginPage() {
       }
     } catch (error: unknown) {
       console.error(typeof error, error);
-
+      setIsGoogleLoading(false);
       if (error instanceof FirebaseError) {
         dispatch(setShowToast(true));
         dispatch(setToastMessage("Google Login Failed, Please Try Again"));
@@ -153,7 +151,7 @@ function LoginPage() {
       }
     } catch (error: unknown) {
       console.error(typeof error, error);
-
+      setIsLoginLoading(false);
       if (
         error instanceof FirebaseError &&
         error.code === "auth/invalid-credential"
@@ -188,12 +186,8 @@ function LoginPage() {
               variant={toastColor as "default" | "destructive"}
             >
               <div className="grid gap-1">
-                <ToastTitle className="text-gray-900 dark:text-white">
-                  Login Error
-                </ToastTitle>
-                <ToastDescription className="text-gray-500 dark:text-gray-300">
-                  {toastMessage}
-                </ToastDescription>
+                <ToastTitle>Login Error</ToastTitle>
+                <ToastDescription>{toastMessage}</ToastDescription>
               </div>
               <ToastClose />
             </Toast>

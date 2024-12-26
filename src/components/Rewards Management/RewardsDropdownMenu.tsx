@@ -27,7 +27,7 @@ const RewardsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"

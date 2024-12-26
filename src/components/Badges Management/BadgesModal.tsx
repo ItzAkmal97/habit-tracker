@@ -62,25 +62,13 @@ const BadgesModal: React.FC<BadgesModalProps> = ({ totalBadges }) => {
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div
-                              className={`flex flex-col items-center gap-2 p-4 rounded-lg transition-colors cursor-pointer
-                                                                ${
-                                                                  earned
-                                                                    ? "bg-gray-800/10 dark:bg-gray-700/30"
-                                                                    : "opacity-40 grayscale"
-                                                                }`}
+                              className={`flex flex-col items-center gap-2 p-4 rounded-lg transition-colors cursor-pointer ${earned ? "bg-gray-800/10 dark:bg-gray-700/30" : "opacity-40 grayscale" }`}
                             >
                               <div
-                                className={`w-12 h-12 flex items-center justify-center rounded-full
-                                                                    ${
-                                                                      earned
-                                                                        ? "bg-gray-800 border-2 border-gray-700 shadow-lg"
-                                                                        : "bg-gray-600 border border-gray-500"
-                                                                    }`}
+                                className={`w-12 h-12 flex items-center justify-center rounded-full ${ earned ? "bg-gray-800 border-2 border-gray-700 shadow-lg" : "bg-gray-600 border border-gray-500" }`}
                               >
                                 <span
-                                  className={`text-xl ${
-                                    earned ? "animate-pulse" : ""
-                                  }`}
+                                  className={`text-xl ${ earned && "animate-pulse" }`}
                                 >
                                   {badge.icon}
                                 </span>
@@ -104,7 +92,7 @@ const BadgesModal: React.FC<BadgesModalProps> = ({ totalBadges }) => {
                           <TooltipContent>
                             <p className="text-sm">
                               {earned ? "Completed: " : ""}
-                              {badge.name}
+                              {badge.name} - {badge.requirement}
                             </p>
                           </TooltipContent>
                         </Tooltip>

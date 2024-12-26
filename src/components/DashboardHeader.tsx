@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import img from "../assets/habit.png";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { MessageSquareMore } from "lucide-react";
+// import { MessageSquareMore } from "lucide-react";
 import { setIsLoggedIn } from "../features/authenticationSlice";
 import { signOut } from "firebase/auth";
 import { auth } from "../util/firebaseConfig";
@@ -89,9 +89,9 @@ const DashboardHeader: React.FC = () => {
         >
           <User className="md:w-8 h-8" />
         </button>
-        <button>
+        {/* <button>
           <MessageSquareMore className="md:w-8 h-8" />
-        </button>
+        </button> */}
         <GameGold gold={totalGold.toFixed(2)} />
 
         {/* Dropdown Menu */}
@@ -117,7 +117,6 @@ const DashboardHeader: React.FC = () => {
               >
                 Logout
               </li>
-
               {!darkModeAccess && (
                 <>
                   <hr className="border-2 dark:border-gray-900" />

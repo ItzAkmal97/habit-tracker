@@ -8,10 +8,10 @@ import avatarImg from "../assets/avatar.png";
 import { Skeleton } from "./ui/skeleton";
 import EarnedBadges from "./Badges Management/EarnedBadges";
 import { useBadgeSystem } from "./Badges Management/useBadgeSystem";
-import { Toaster } from 'sonner';
+import { Toaster } from "sonner";
 
 const ProfileHeader: React.FC = () => {
-  useBadgeSystem(); // Add the badge system hook
+  useBadgeSystem();
   const dispatch = useDispatch();
   const { xp, level, totalXpForNextLevel } = useSelector(
     (state: RootState) => state.xpLevel
@@ -37,9 +37,10 @@ const ProfileHeader: React.FC = () => {
   }, [dispatch]);
 
   const totalProgressPercentage = Math.floor((xp / totalXpForNextLevel) * 100);
-  const cssClass = totalProgressPercentage > 49 
-    ? "text-white dark:text-black" 
-    : "text-black dark:text-white";
+  const cssClass =
+    totalProgressPercentage > 50
+      ? "text-white dark:text-black"
+      : "text-black dark:text-white";
 
   return (
     <>
@@ -85,7 +86,8 @@ const ProfileHeader: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">XP</span>
                     <span className="text-sm font-medium">
-                      {xp?.toLocaleString()}/{totalXpForNextLevel?.toLocaleString()}
+                      {xp?.toLocaleString()}/
+                      {totalXpForNextLevel?.toLocaleString()}
                     </span>
                   </div>
                   <div className="relative w-full h-4 dark:bg-gray-800 bg-white rounded-full">
@@ -98,7 +100,9 @@ const ProfileHeader: React.FC = () => {
                       transition={{ duration: 0.5, ease: "easeInOut" }}
                       className="h-4 dark:bg-gray-200 rounded-full bg-slate-700"
                     >
-                      <span className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-center ${cssClass}`}>
+                      <span
+                        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-sm font-bold text-center ${cssClass}`}
+                      >
                         {totalProgressPercentage}%
                       </span>
                     </motion.div>
