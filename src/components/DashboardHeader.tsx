@@ -13,6 +13,7 @@ import { RootState } from "../store/store";
 import { getTotalGold, setTotalGold } from "@/features/rewardSlice";
 import { User } from "lucide-react";
 import { Link } from "react-router-dom";
+
 const DashboardHeader: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
@@ -72,9 +73,7 @@ const DashboardHeader: React.FC = () => {
       console.error("Logout failed:", error);
     }
   };
-  
 
-  const googlePhoto = localStorage.getItem("photoURL");
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
 
@@ -89,12 +88,9 @@ const DashboardHeader: React.FC = () => {
         >
           <User className="md:w-8 h-8" />
         </button>
-        {/* <button>
-          <MessageSquareMore className="md:w-8 h-8" />
-        </button> */}
+
         <GameGold gold={totalGold.toFixed(2)} />
 
-        {/* Dropdown Menu */}
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
@@ -141,12 +137,6 @@ const DashboardHeader: React.FC = () => {
               Username: {username}
             </li>
             <li className="px-4 py-2 hover:bg-gray-100">Email: {email}</li>
-            {!googlePhoto && (
-              <li className="px-4 py-2">
-                <label htmlFor="file">Change Profile Picture</label>
-                <input className="pt-2" type="file" />
-              </li>
-            )}
           </ul>
         </Modal>
       </div>

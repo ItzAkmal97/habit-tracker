@@ -22,3 +22,4 @@ export const saveUserBadges = async (userEmail: string, badges: Badge[]) => {
     console.error('Error saving badges:', error);
   }
 };
+
