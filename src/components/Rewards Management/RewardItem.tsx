@@ -1,18 +1,37 @@
 import React from "react";
 import { Reorder } from "framer-motion";
+import { toast } from "sonner";
 import { Reward } from "../../features/rewardSlice";
 import RewardsDropdownMenu from "./RewardsDropdownMenu";
 import { useDispatch, useSelector } from "react-redux";
 import { Button } from "../ui/button";
 import { decrementTotalGold } from "../../features/rewardSlice";
-import { RootState } from '../../store/store';
-import { 
-  Toast, 
-  ToastProvider, 
-  ToastViewport, 
-  ToastTitle, 
-  ToastClose 
-} from "../ui/toast";
+import { RootState } from "../../store/store";
+
+const GoldCoinIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 200 200"
+    width="24"
+    height="24"
+    className="shrink-0"
+  >
+    <circle
+      cx="100"
+      cy="100"
+      r="90"
+      fill="#FFD700"
+      stroke="#B8860B"
+      strokeWidth="10"
+    />
+    <polygon
+      points="100,30 120,80 175,80 130,115 150,170 100,140 50,170 70,115 25,80 80,80"
+      fill="#FFA500"
+      stroke="#FF8C00"
+      strokeWidth="5"
+    />
+  </svg>
+);
 
 interface RewardItemProps {
   onDelete: () => void;
@@ -22,22 +41,43 @@ interface RewardItemProps {
 const RewardItem: React.FC<RewardItemProps> = ({ onDelete, reward }) => {
   const dispatch = useDispatch();
   const { totalGold } = useSelector((state: RootState) => state.reward);
-  const [showToast, setShowToast] = React.useState(false);
 
   const handleGoldCalc = () => {
     const rewardCost = reward.cost ?? 0;
 
     if (totalGold < rewardCost) {
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-      return;
+      toast.error("Not enough gold", {
+        duration: 3000,
+        style: {
+          backgroundColor: "#5BC0DE",
+          color: "white",
+          border: 0,
+          width: "50%",
+          position: "absolute",
+          top: 10,
+          right: 0,
+        },
+      });
+    } else if (totalGold >= rewardCost) {
+      toast.success(`You spent ${rewardCost} gold`, {
+        duration: 3000,
+        style: {
+          backgroundColor: "red",
+          color: "white",
+          border: 0,
+          width: "50%",
+          position: "absolute",
+          top: 10,
+          right: 0,
+        },
+        icon: <GoldCoinIcon />,
+      });
+      dispatch(decrementTotalGold(rewardCost));
     }
-
-    dispatch(decrementTotalGold(rewardCost));
   };
 
   return (
-    <ToastProvider>
+    <>
       <Reorder.Item value={reward} id={reward.id} className="list-none">
         <div className="flex flex-col p-4 bg-white dark:bg-gray-700 mb-2 rounded-lg shadow-sm transition-all duration-200 cursor-grab active:cursor-grabbing hover:shadow-md">
           <div className="flex-grow">
@@ -93,17 +133,7 @@ const RewardItem: React.FC<RewardItemProps> = ({ onDelete, reward }) => {
           </div>
         </div>
       </Reorder.Item>
-
-      {showToast && (
-        <Toast variant="destructive">
-          <div className="grid gap-1">
-            <ToastTitle>Not Enough Gold</ToastTitle>
-          </div>
-          <ToastClose onClick={() => setShowToast(false)} />
-        </Toast>
-      )}
-      <ToastViewport />
-    </ToastProvider>
+    </>
   );
 };
 

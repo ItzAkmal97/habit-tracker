@@ -77,13 +77,11 @@ const Payment: React.FC = () => {
       if (paymentError) throw paymentError;
 
       if (paymentIntent.status === "succeeded") {
-        // Set localStorage
+
         localStorage.setItem("darkModeAccess", "true");
         
-        // Update Firebase
         await saveDarkModeAccess("true");
         
-        // Update Redux state
         dispatch(setDarkMode(true));
       
         

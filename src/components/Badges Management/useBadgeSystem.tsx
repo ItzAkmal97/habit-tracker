@@ -96,19 +96,15 @@ export const useBadgeSystem = () => {
   useEffect(() => {
     if (!initialLoadComplete.current) return;
 
-    // Get all progression badges except the Habit King badge
     const regularBadges = BADGESDATA.progression.filter(badge => badge.id !== 'habit-king');
     const habitKingBadge = BADGESDATA.progression.find(badge => badge.id === 'habit-king');
     
-    // Check if user has earned all regular badges
     const hasAllRegularBadges = regularBadges.every(badge => 
       badges.some(earnedBadge => earnedBadge.id === badge.id)
     );
 
-    // Check if user doesn't already have the Habit King badge
     const hasHabitKingBadge = badges.some(badge => badge.id === 'habit-king');
 
-    // If all regular badges are earned and Habit King isn't earned yet, award it
     if (hasAllRegularBadges && !hasHabitKingBadge && habitKingBadge) {
       dispatch(addBadge(habitKingBadge));
       toast.success("Congratulations! Final Badge Unlocked!", {
@@ -123,7 +119,7 @@ export const useBadgeSystem = () => {
             </div>
           </div>
         ),
-        duration: 7000, // Longer duration for this special achievement
+        duration: 7000,
       });
     }
 

@@ -18,31 +18,26 @@ const ModeToggle = () => {
   useEffect(() => {
     const initializeDarkMode = async () => {
       try {
-        // First check localStorage for immediate UI response
         const localAccess = localStorage.getItem("darkModeAccess")
         
         if (localAccess === "true") {
           setHasDarkModeAccess(true)
           dispatch(setDarkMode(true))
           
-          // Respect user's last theme preference if they have access
           const savedTheme = localStorage.getItem("vite-ui-theme")
           if (savedTheme) {
             setTheme(savedTheme as "light" | "dark")
           }
         } else {
-          // If no local access, force light theme
           setTheme("light")
         }
 
-        // Then verify with Firebase
         const firebaseAccess = await getDarkModeAccess()
         if (firebaseAccess === "true") {
           setHasDarkModeAccess(true)
           localStorage.setItem("darkModeAccess", "true")
           dispatch(setDarkMode(true))
         } else {
-          // If no Firebase access, ensure light theme
           setHasDarkModeAccess(false)
           localStorage.removeItem("darkModeAccess")
           dispatch(setDarkMode(false))
@@ -50,7 +45,6 @@ const ModeToggle = () => {
         }
       } catch (error) {
         console.error("Error initializing dark mode:", error)
-        // On error, default to light theme
         setTheme("light")
       }
     }

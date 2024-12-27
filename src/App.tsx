@@ -14,7 +14,6 @@ import { selectIsLoggedIn } from "./features/authenticationSlice";
 
 function App() {
 
-
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const {isLoading} = useAuth();
 

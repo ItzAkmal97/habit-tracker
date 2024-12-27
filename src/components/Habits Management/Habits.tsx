@@ -42,7 +42,7 @@ const Habits: React.FC = () => {
         setIsLoading(true);
         const habitCollection = collection(db, "users", user.uid, "habits");
         const snapshot = await getDocs(habitCollection);
-
+        
         const fetchedHabits: Habit[] = snapshot.docs
           .map(
             (doc) =>
@@ -55,11 +55,10 @@ const Habits: React.FC = () => {
           )
           .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-        // Check and reset habits based on their frequency
         const updatedHabits = checkAndResetHabits(fetchedHabits);
         dispatch(setHabits(updatedHabits));
 
-        // Update Firestore with reset habits
+    
         if (user) {
           const batch = updatedHabits.map((habit, index) => {
             const habitRef = doc(db, "users", user.uid, "habits", habit.id);
@@ -120,12 +119,10 @@ const Habits: React.FC = () => {
   };
 
   const handleReorder = async (newOrder: Habit[]) => {
-    // Update local state
     dispatch(setHabits(newOrder));
 
     if (user) {
       try {
-        // Update order in Firestore
         const batch = newOrder.map((habit, index) => {
           const habitRef = doc(db, "users", user.uid, "habits", habit.id);
           return updateDoc(habitRef, { order: index });
@@ -141,11 +138,9 @@ const Habits: React.FC = () => {
   const handleDeleteHabit = async (habitId: string) => {
     if (user) {
       try {
-        // Delete from Firestore
         const habitRef = doc(db, "users", user.uid, "habits", habitId);
         await deleteDoc(habitRef);
 
-        // Delete from Redux store
         dispatch(deleteHabit(habitId));
       } catch (error) {
         console.error("Error deleting habit:", error);

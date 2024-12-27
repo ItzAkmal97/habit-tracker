@@ -21,13 +21,13 @@ export const BADGESDATA = {
         requirement: 'Accumulate 10,000 XP',
         xpRequired: 10000,
       },
-      // {
-      //   id: 'consistent',
-      //   name: 'Consistent',
-      //   icon: '🔥',
-      //   requirement: '7 day streak',
-      //   streak: 7,
-      // },
+      {
+        id: 'consistent',
+        name: 'Consistent',
+        icon: '🔥',
+        requirement: '7 day streak',
+        streak: 7,
+      },
       {
         id: 'achiever',
         name: 'Achiever',
@@ -63,26 +63,26 @@ export const BADGESDATA = {
         requirement: 'Complete level 100',
         levelRequired: 100,
       },
-      // {
-      //   id: 'early-bird',
-      //   name: 'Early Bird',
-      //   icon: '🌅',
-      //   requirement: 'Log a Habit Before 8:00 AM',
-      //   time: '08:00',
-      // },
-      // {
-      //   id: 'night-owl',
-      //   name: 'Night Owl',
-      //   icon: '🦉',
-      //   requirement: 'Log a Habit After 11:00 PM',
-      //   time: '23:00',
-      // },
-      // {
-      //   id: 'habit-lord',
-      //   name: 'Habit Lord',
-      //   icon: '⌛',
-      //   requirement: 'Log 100 Positive Habits',
-      // },
+      {
+        id: 'early-bird',
+        name: 'Early Bird',
+        icon: '🌅',
+        requirement: 'Log a Habit Before 8:00 AM',
+        time: '08:00',
+      },
+      {
+        id: 'night-owl',
+        name: 'Night Owl',
+        icon: '🦉',
+        requirement: 'Log a Habit After 11:00 PM',
+        time: '23:00',
+      },
+      {
+        id: 'habit-lord',
+        name: 'Habit Lord',
+        icon: '⌛',
+        requirement: 'Log 100 Positive Habits',
+      },
       {
         id: 'habit-king',
         name: 'Habit King',
@@ -97,13 +97,13 @@ export const BADGESDATA = {
         requirement: 'Earn 100,000 XP',
         xpRequired: 100000,
       },
-      // {
-      //   id: 'marathon-runner',
-      //   name: 'Marathon Runner',
-      //   icon: '🏃',
-      //   requirement: '30 day streak',
-      //   daysRequired: 30,
-      // }
+      {
+        id: 'marathon-runner',
+        name: 'Marathon Runner',
+        icon: '🏃',
+        requirement: '30 day streak',
+        daysRequired: 30,
+      }
     ]
   };
   

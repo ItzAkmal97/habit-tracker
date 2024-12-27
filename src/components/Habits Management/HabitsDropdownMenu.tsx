@@ -9,6 +9,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "../ui/alert-dialog";
 
 interface HabitDropdownMenuProps {
   habit: Habit;
@@ -20,9 +29,14 @@ const HabitsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
   onDelete,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   const handleEdit = () => {
     setIsModalOpen(true);
+  };
+
+  const handleDelete = () => {
+    setIsAlertOpen(true);
   };
 
   return (
@@ -40,11 +54,11 @@ const HabitsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-[160px]">
           <DropdownMenuItem onSelect={handleEdit} className="cursor-pointer">
-            <Edit className="mr-2 h-4 w-4" />
-            <span>Edit</span>
+            <Edit className="mr-2 h-4 w-4" /> <span>Edit</span>
           </DropdownMenuItem>
-          <DropdownMenuItem
-            onSelect={onDelete}
+          
+          <DropdownMenuItem 
+            onSelect={handleDelete} 
             className="cursor-pointer text-destructive focus:text-destructive dark:text-red-500 dark:focus:text-red-500"
           >
             <Trash2 className="mr-2 h-4 w-4" />
@@ -52,6 +66,25 @@ const HabitsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent className="w-[400px] bg-slate-900">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to delete this habit?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                onDelete();
+                setIsAlertOpen(false);
+              }}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <HabitsModal
         habit={habit}

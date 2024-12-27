@@ -9,6 +9,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import RewardsModal from "./RewardsModal";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogAction,
+  AlertDialogCancel,
+} from "../ui/alert-dialog";
 
 interface HabitDropdownMenuProps {
   reward: Reward;
@@ -20,9 +29,14 @@ const RewardsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
   onDelete,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
 
   const handleEdit = () => {
     setIsModalOpen(true);
+  };
+
+  const handleDeleteAlert = () => {
+    setIsAlertOpen(true);
   };
 
   return (
@@ -44,7 +58,7 @@ const RewardsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
             <span>Edit</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            onSelect={onDelete}
+            onSelect={handleDeleteAlert}
             className="cursor-pointer text-destructive focus:text-destructive dark:text-red-500 dark:focus:text-red-500"
           >
             <Trash2 className="mr-2 h-4 w-4" />
@@ -52,6 +66,27 @@ const RewardsDropdownMenu: React.FC<HabitDropdownMenuProps> = ({
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Are you sure you want to delete this reward?
+            </AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                onDelete();
+                setIsAlertOpen(false);
+              }}
+            >
+              Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <RewardsModal
         reward={reward}
