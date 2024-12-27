@@ -58,11 +58,14 @@ const Payment: React.FC = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:3000/api/create-payment", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, amount: 5000 }),
-      });
+      const response = await fetch(
+        "https://habit-tracker-pi-blue.vercel.app/api/create-payment",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, amount: 5000 }),
+        }
+      );
 
       const { clientSecret } = await response.json();
 
@@ -79,16 +82,18 @@ const Payment: React.FC = () => {
       if (paymentIntent.status === "succeeded") {
 
         localStorage.setItem("darkModeAccess", "true");
+
+        // Update Firebase
         
         await saveDarkModeAccess("true");
-        
+
+        // Update Redux state
         dispatch(setDarkMode(true));
-      
-        
+
         setSuccess(true);
         setToastMessage("Payment successful! Dark mode activated.");
         dispatch(setShowToast(true));
-      
+
         setTimeout(() => {
           dispatch(setShowToast(false));
           navigate("/dashboard");
