@@ -22,13 +22,6 @@ export const BADGESDATA = {
         xpRequired: 10000,
       },
       {
-        id: 'consistent',
-        name: 'Consistent',
-        icon: '🔥',
-        requirement: '7 day streak',
-        streak: 7,
-      },
-      {
         id: 'achiever',
         name: 'Achiever',
         icon: '✅',
@@ -97,13 +90,6 @@ export const BADGESDATA = {
         requirement: 'Earn 100,000 XP',
         xpRequired: 100000,
       },
-      {
-        id: 'marathon-runner',
-        name: 'Marathon Runner',
-        icon: '🏃',
-        requirement: '30 day streak',
-        daysRequired: 30,
-      }
     ]
   };
   

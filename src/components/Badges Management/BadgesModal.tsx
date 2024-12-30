@@ -26,6 +26,7 @@ interface Badge {
   requirement: string;
   xpRequired?: number;
   levelRequired?: number;
+  time?: string;
 }
 
 interface BadgesModalProps {

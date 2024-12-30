@@ -8,9 +8,7 @@ export interface Badge {
   requirement: string;
   xpRequired?: number;
   levelRequired?: number;
-  streak?: number;
   time?: string;
-  daysRequired?: number;
 }
 
 const initialState = {
@@ -50,6 +48,6 @@ const badgeSlice = createSlice({
   },
 });
 
-export const { setBadges, addBadge, xpBadge, levelBadge } =
+export const { setBadges, addBadge, xpBadge, levelBadge} =
   badgeSlice.actions;
 export default badgeSlice.reducer;
